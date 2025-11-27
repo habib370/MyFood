@@ -8,7 +8,7 @@ const StoreContextProvider = ({ children }) => {
   const [cartItems, setCartItems] = useState({});
   const [token, setToken] = useState("");
   const [user, setUser] = useState(null);
-  const url = "http://localhost:4000";
+  const url = "https://myfood-backend-fngt.onrender.com";
    
   const[food_list,setFoodList]=useState([])
 
