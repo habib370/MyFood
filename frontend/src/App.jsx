@@ -5,6 +5,7 @@ import { Route, Routes } from "react-router-dom";
 import { Home } from "./pages/Home.jsx";
 import { Cart } from "./pages/Cart.jsx";
 import { PlaceOrder } from "./pages/PlaceOrder.jsx";
+import {Delivery} from './pages/Delivery.jsx'
 import { LoginPopup } from "./components/LoginPopup.jsx";
 import { Footer } from "./components/Footer.jsx";
 import { ToastContainer } from "react-toastify";
@@ -22,6 +23,7 @@ function App() {
           <Route path="/" element={<Home />} />
           <Route path="/cart" element={<Cart />} />
           <Route path="/order" element={<PlaceOrder />} />
+           <Route path="/delivery" element={<Delivery />} />
         </Routes>
       </main>
 

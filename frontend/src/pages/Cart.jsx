@@ -2,6 +2,7 @@ import React, { useContext } from "react";
 import { StoreContext } from "../context/StoreContext.jsx";
 import{useNavigate} from 'react-router-dom'
 
+
 export const Cart = () => {
   const navigate=useNavigate();
   const { food_list, cartItems, addToCart, deleteFromCart,removeAllFromCart ,url} =
@@ -84,7 +85,7 @@ export const Cart = () => {
               {/* Remove - full width on mobile, auto on desktop */}
               <div className="w-full md:w-auto flex justify-end md:justify-start">
                 <button
-                  className="text-red-500 hover:text-red-700 text-sm md:text-base py-1 px-3 border border-red-300 rounded-md hover:bg-red-50 transition-colors w-full md:w-auto text-center"
+                  className="text-red-500 hover:text-red-700 text-sm md:text-base py-1 px-3 border border-red-300 rounded-md hover:bg-red-500 transition-colors w-full md:w-auto text-center"
                   onClick={() => removeAllFromCart(item._id)}
                 >
                   Remove

@@ -112,7 +112,7 @@ const StoreContextProvider = ({ children }) => {
   };
   const getAllItemsFromTheCart=async(tkn)=>{
     const response =await axios.get(url+"/api/cart/get",{headers:{token: tkn }})
-    console.log(response.data.cartData)
+   
     if(response.data.ok){
       setCartItems(response.data.cartData);
     }

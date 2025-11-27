@@ -3,6 +3,7 @@ import { StoreContext } from "../context/StoreContext.jsx";
 import { assets } from "../assets/assets.js";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+
 export const FoodDisplay = ({ category }) => {
   const { food_list, cartItems, addToCart, deleteFromCart, isLoggedIn,url } =
     useContext(StoreContext);

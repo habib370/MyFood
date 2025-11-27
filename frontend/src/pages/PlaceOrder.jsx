@@ -1,18 +1,22 @@
 import React, { useContext, useState } from "react";
 import { StoreContext } from "../context/StoreContext.jsx";
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from "react-router-dom";
+import axios from "axios";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 export const PlaceOrder = () => {
-  const { food_list, cartItems, removeAllFromCart ,url} = useContext(StoreContext);
+  const { food_list, cartItems, removeAllFromCart, url, token } =
+    useContext(StoreContext);
   const navigate = useNavigate();
-  
+
   // Form state
   const [formData, setFormData] = useState({
-    fullname: '',
-    email: '',
-    city: '',
-    street: '',
-    extraInfo: ''
+    fullname: "",
+    email: "",
+    city: "",
+    street: "",
+    extraInfo: "",
   });
 
   // Calculate total price
@@ -28,22 +32,64 @@ export const PlaceOrder = () => {
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
-      [name]: value
+      [name]: value,
     }));
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    // Here you would typically send the order data to your backend
-    console.log('Order submitted:', { ...formData, cartItems, grandTotal });
+
+    // Validate required fields
+    const { fullname, email, city, street } = formData;
+    if (!fullname || !email || !city || !street) {
+      toast.error("Please fill in all required address fields!");
+      return;
+    }
+
+    SubmitOrder();
+    console.log("Order submitted:", { ...formData, cartItems, grandTotal });
     removeAllFromCart();
-    navigate('/order');
+  };
+
+  const SubmitOrder = async () => {
+    const orderItems = food_list
+      .filter((item) => cartItems[item._id] > 0)
+      .map((item) => ({
+        id: item._id,
+        name: item.name,
+        qty: cartItems[item._id],
+        price: item.price,
+      }));
+
+    const orderData = {
+      items: orderItems,
+      amount: totalPrice,
+      address: formData,
+    };
+
+    try {
+      const response = await axios.post(url + "/api/order/place", orderData, {
+        headers: { token },
+      });
+
+      if (response.data.ok) {
+        toast.success("Order submitted successfully");
+        navigate("/delivery");
+      } else {
+        toast.error("Something went wrong!");
+        console.log(response.data.message);
+      }
+    } catch (error) {
+      toast.error("Failed to submit order!");
+      console.log(error);
+    }
   };
 
   return (
     <div className="min-h-screen bg-gray-50 py-8">
+      <ToastContainer />
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 ">
         <div className="text-center mb-8">
           <h1 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-2">
@@ -58,8 +104,9 @@ export const PlaceOrder = () => {
           {/* Delivery Information */}
           <div className="bg-white rounded-2xl shadow-lg p-6 sm:p-8">
             <div className="flex items-center mb-6">
-             
-              <h2 className="text-2xl font-bold text-gray-900">Delivery Information</h2>
+              <h2 className="text-2xl font-bold text-gray-900">
+                Delivery Information
+              </h2>
             </div>
 
             <form onSubmit={handleSubmit} className="space-y-6">
@@ -145,27 +192,37 @@ export const PlaceOrder = () => {
           <div className="space-y-6">
             <div className="bg-white rounded-2xl shadow-lg p-6 sm:p-8">
               <div className="flex items-center mb-6">
-                
-                <h2 className="text-2xl font-bold text-gray-900">Order Summary</h2>
+                <h2 className="text-2xl font-bold text-gray-900">
+                  Order Summary
+                </h2>
               </div>
 
               {/* Cart Items Preview */}
               <div className="mb-6">
-                <h3 className="font-semibold text-gray-700 mb-3">Items in your cart:</h3>
+                <h3 className="font-semibold text-gray-700 mb-3">
+                  Items in your cart:
+                </h3>
                 <div className="space-y-3 max-h-60 overflow-y-auto">
                   {food_list.map((item) => {
                     if (cartItems[item._id] > 0) {
                       return (
-                        <div key={item._id} className="flex items-center justify-between py-2 border-b border-gray-100">
+                        <div
+                          key={item._id}
+                          className="flex items-center justify-between py-2 border-b border-gray-100"
+                        >
                           <div className="flex items-center gap-2">
                             <img
-                              src={url+"/images/"+item.image}
+                              src={url + "/images/" + item.image}
                               alt={item.name}
                               className="w-10 h-10 object-cover rounded-lg"
                             />
                             <div>
-                              <p className="font-medium text-sm text-gray-800">{item.name}</p>
-                              <p className="text-xs text-gray-500">Qty: {cartItems[item._id]}</p>
+                              <p className="font-medium text-sm text-gray-800">
+                                {item.name}
+                              </p>
+                              <p className="text-xs text-gray-500">
+                                Qty: {cartItems[item._id]}
+                              </p>
                             </div>
                           </div>
                           <p className="font-semibold text-gray-800">
@@ -183,16 +240,20 @@ export const PlaceOrder = () => {
               <div className="space-y-4">
                 <div className="flex justify-between items-center">
                   <span className="text-gray-600">Subtotal:</span>
-                  <span className="font-medium text-gray-800">${totalPrice.toFixed(2)}</span>
+                  <span className="font-medium text-gray-800">
+                    ${totalPrice.toFixed(2)}
+                  </span>
                 </div>
-                
+
                 <div className="flex justify-between items-center">
                   <span className="text-gray-600">Delivery Fee:</span>
-                  <span className="font-medium text-gray-800">${deliveryFee.toFixed(2)}</span>
+                  <span className="font-medium text-gray-800">
+                    ${deliveryFee.toFixed(2)}
+                  </span>
                 </div>
-                
+
                 <hr className="border-gray-300" />
-                
+
                 <div className="flex justify-between items-center text-lg font-bold">
                   <span className="text-gray-800">Grand Total:</span>
                   <span className="text-orange-600 text-xl">
@@ -208,24 +269,39 @@ export const PlaceOrder = () => {
                 className="w-full mt-6 h-14 bg-gradient-to-r from-orange-500 to-orange-600 text-white font-bold rounded-xl hover:from-orange-600 hover:to-orange-700 transition-all duration-300 shadow-lg hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
               >
                 <span className="mr-2">Place Order</span>
-                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
+                <svg
+                  className="w-5 h-5"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M13 7l5 5m0 0l-5 5m5-5H6"
+                  />
                 </svg>
               </button>
 
               {/* Security Badge */}
               <div className="mt-4 text-center">
                 <div className="flex items-center justify-center space-x-2 text-sm text-gray-500">
-                  <svg className="w-4 h-4 text-green-500" fill="currentColor" viewBox="0 0 20 20">
-                    <path fillRule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clipRule="evenodd" />
+                  <svg
+                    className="w-4 h-4 text-green-500"
+                    fill="currentColor"
+                    viewBox="0 0 20 20"
+                  >
+                    <path
+                      fillRule="evenodd"
+                      d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z"
+                      clipRule="evenodd"
+                    />
                   </svg>
                   <span>Secure checkout · 100% protected</span>
                 </div>
               </div>
             </div>
-
-            {/* Support Card */}
-           
           </div>
         </div>
       </div>
