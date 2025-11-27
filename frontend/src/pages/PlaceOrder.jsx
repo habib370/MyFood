@@ -3,7 +3,7 @@ import { StoreContext } from "../context/StoreContext.jsx";
 import { useNavigate } from 'react-router-dom';
 
 export const PlaceOrder = () => {
-  const { food_list, cartItems, removeAllFromCart } = useContext(StoreContext);
+  const { food_list, cartItems, removeAllFromCart ,url} = useContext(StoreContext);
   const navigate = useNavigate();
   
   // Form state
@@ -159,7 +159,7 @@ export const PlaceOrder = () => {
                         <div key={item._id} className="flex items-center justify-between py-2 border-b border-gray-100">
                           <div className="flex items-center gap-2">
                             <img
-                              src={item.image}
+                              src={url+"/images/"+item.image}
                               alt={item.name}
                               className="w-10 h-10 object-cover rounded-lg"
                             />

@@ -1,10 +1,51 @@
-import React from "react";
+import React, { useContext } from "react";
 import { assets } from "../assets/assets.js";
+import { StoreContext } from "../context/StoreContext.jsx";
+import axios from "axios";
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 export const LoginPopup = ({ setShow }) => {
+  const [data, setData] = React.useState({
+    firstName: "",
+    lastName: "",
+    email: "",
+    password: "",
+  });
   const [isClose, setIsClose] = React.useState(false);
   const [isSignedIn, setIsSignedIn] = React.useState(false);
+  const { url, setToken,setUser } = useContext(StoreContext);
+  let newUrl = url;
+  const setAuth = async (e) => {
+    e.preventDefault();
+    const endpoint = isSignedIn ? "/api/user/login" : "/api/user/register";
+    try {
+      const response = await axios.post(url + endpoint, data);
+      if (response.data.ok) {
+        setToken(response.data.token);
+        localStorage.setItem("token", response.data.token);
+        setIsClose(true);
+        setShow(false);
+        toast.success(response.data.message)
+      } else {
+        toast.error(response.data.message)
+        console.log(response.data.message);
+      }
+      setUser(response.data.user);
+      console.log(data);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
   if (isClose) return null; // Hide popup when closed
+  
+  const handleChange = (e) => {
+    setData({
+      ...data,
+      [e.target.name]: e.target.value,
+    });
+  };
 
   return (
     <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex justify-center items-center z-50 pt-15">
@@ -17,13 +58,18 @@ export const LoginPopup = ({ setShow }) => {
           }}
           className="absolute top-4 right-4 w-8 h-8 bg-gray-100 hover:bg-gray-200 rounded-full flex items-center justify-center transition-colors duration-200 group"
         >
-          <svg 
-            className="w-4 h-4 text-gray-600 group-hover:text-gray-800" 
-            fill="none" 
-            stroke="currentColor" 
+          <svg
+            className="w-4 h-4 text-gray-600 group-hover:text-gray-800"
+            fill="none"
+            stroke="currentColor"
             viewBox="0 0 24 24"
           >
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M6 18L18 6M6 6l12 12"
+            />
           </svg>
         </button>
 
@@ -38,45 +84,63 @@ export const LoginPopup = ({ setShow }) => {
         </div>
 
         {/* Form */}
-        <form className="flex flex-col gap-4">
+        <form onSubmit={setAuth} className="flex flex-col gap-4">
           {!isSignedIn && (
             <div className="grid grid-cols-2 gap-4">
               <div className="flex flex-col gap-2">
-                <label className="text-sm font-medium text-gray-700">First Name</label>
+                <label className="text-sm font-medium text-gray-700">
+                  First Name
+                </label>
                 <input
                   className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all duration-200"
                   type="text"
+                  name="firstName"
+                  value={data.firstName}
+                  onChange={(e) => handleChange(e)}
                   required
                   placeholder="John"
                 />
               </div>
               <div className="flex flex-col gap-2">
-                <label className="text-sm font-medium text-gray-700">Last Name</label>
+                <label className="text-sm font-medium text-gray-700">
+                  Last Name
+                </label>
                 <input
                   className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all duration-200"
                   type="text"
+                  name="lastName"
+                  value={data.lastName}
+                  onChange={(e) => handleChange(e)}
                   required
                   placeholder="Doe"
                 />
               </div>
             </div>
           )}
-          
+
           <div className="flex flex-col gap-2">
             <label className="text-sm font-medium text-gray-700">Email</label>
             <input
               className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all duration-200"
               type="email"
+              name="email"
+              value={data.email}
+              onChange={(e) => handleChange(e)}
               required
               placeholder="your@email.com"
             />
           </div>
 
           <div className="flex flex-col gap-2">
-            <label className="text-sm font-medium text-gray-700">Password</label>
+            <label className="text-sm font-medium text-gray-700">
+              Password
+            </label>
             <input
               className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all duration-200"
               type="password"
+              name="password"
+              value={data.password}
+              onChange={(e) => handleChange(e)}
               required
               placeholder="••••••••"
             />

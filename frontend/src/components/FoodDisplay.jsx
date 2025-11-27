@@ -1,10 +1,19 @@
 import React, { useContext } from "react";
 import { StoreContext } from "../context/StoreContext.jsx";
 import { assets } from "../assets/assets.js";
-
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 export const FoodDisplay = ({ category }) => {
-  const { food_list, cartItems, addToCart, deleteFromCart } = useContext(StoreContext);
+  const { food_list, cartItems, addToCart, deleteFromCart, isLoggedIn,url } =
+    useContext(StoreContext);
 
+  const handleAddToCart = (foodItem) => {
+    if (!isLoggedIn()) {
+      toast.error("Please log in first");
+    } else {
+      addToCart(foodItem._id);
+    }
+  };
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
       {/* Header */}
@@ -19,7 +28,10 @@ export const FoodDisplay = ({ category }) => {
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
         {food_list
-          .filter((item) => !category || category === "all" || category === item.category)
+          .filter(
+            (item) =>
+              !category || category === "all" || category === item.category
+          )
           .map((foodItem) => {
             const quantity = cartItems[foodItem._id] || 0;
 
@@ -36,7 +48,7 @@ export const FoodDisplay = ({ category }) => {
                 {/* Image Container */}
                 <div className="relative w-full h-48 mb-4 rounded-xl overflow-hidden">
                   <img
-                    src={foodItem.image}
+                    src={url+"/images/"+foodItem.image}
                     alt={foodItem.name}
                     className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
                   />
@@ -64,8 +76,14 @@ export const FoodDisplay = ({ category }) => {
                       <p className="text-xs text-gray-500">per serving</p>
                     </div>
                     <div className="flex items-center gap-2">
-                      <img src={assets.rating_starts} alt="rating" className="w-20 opacity-90" />
-                      <span className="text-xs text-gray-500 font-medium">(4.5)</span>
+                      <img
+                        src={assets.rating_starts}
+                        alt="rating"
+                        className="w-20 opacity-90"
+                      />
+                      <span className="text-xs text-gray-500 font-medium">
+                        (4.5)
+                      </span>
                     </div>
                   </div>
 
@@ -73,7 +91,9 @@ export const FoodDisplay = ({ category }) => {
                   <div className="mt-4">
                     {quantity === 0 ? (
                       <button
-                        onClick={() => addToCart(foodItem._id)}
+                        onClick={() => {
+                          handleAddToCart(foodItem);
+                        }}
                         className="
                           w-full bg-gradient-to-r from-green-500 to-emerald-600 
                           text-white font-semibold py-3 px-6 rounded-xl
@@ -83,8 +103,18 @@ export const FoodDisplay = ({ category }) => {
                           flex items-center justify-center gap-2
                         "
                       >
-                        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+                        <svg
+                          className="w-5 h-5"
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M12 6v6m0 0v6m0-6h6m-6 0H6"
+                          />
                         </svg>
                         Add to Cart
                       </button>
@@ -101,12 +131,14 @@ export const FoodDisplay = ({ category }) => {
                         >
                           −
                         </button>
-                        
+
                         <div className="flex flex-col items-center">
-                          <span className="text-lg font-bold text-gray-800">{quantity}</span>
+                          <span className="text-lg font-bold text-gray-800">
+                            {quantity}
+                          </span>
                           <span className="text-xs text-gray-500">in cart</span>
                         </div>
-                        
+
                         <button
                           onClick={() => addToCart(foodItem._id)}
                           className="
@@ -133,13 +165,13 @@ export const FoodDisplay = ({ category }) => {
       {/* Custom Animations */}
       <style jsx>{`
         @keyframes fadeIn {
-          from { 
-            opacity: 0; 
-            transform: translateY(20px) scale(0.95); 
+          from {
+            opacity: 0;
+            transform: translateY(20px) scale(0.95);
           }
-          to { 
-            opacity: 1; 
-            transform: translateY(0) scale(1); 
+          to {
+            opacity: 1;
+            transform: translateY(0) scale(1);
           }
         }
         .animate-fadeIn {

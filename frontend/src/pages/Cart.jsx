@@ -4,7 +4,7 @@ import{useNavigate} from 'react-router-dom'
 
 export const Cart = () => {
   const navigate=useNavigate();
-  const { food_list, cartItems, addToCart, deleteFromCart,removeAllFromCart } =
+  const { food_list, cartItems, addToCart, deleteFromCart,removeAllFromCart ,url} =
     useContext(StoreContext);
 
   // Calculate total price
@@ -39,7 +39,7 @@ export const Cart = () => {
               {/* Image and Title combined on mobile */}
               <div className="flex items-center gap-3 md:block w-full md:w-auto">
                 <img
-                  src={item.image}
+                  src={url+"/images/"+item.image}
                   alt={item.name}
                   className="w-12 h-12 object-cover rounded flex-shrink-0"
                 />
