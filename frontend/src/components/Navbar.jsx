@@ -120,81 +120,88 @@ export const Navbar = ({ setShow }) => {
       </div>
 
       {/* Mobile Dropdown */}
-      {isMobileMenuOpen && (
+{isMobileMenuOpen && (
+  <div
+    className={`md:hidden fixed top-0 right-0 h-4/7 w-1/2 bg-white shadow-xl border-l border-gray-200 z-50 transform transition-transform duration-300 ${
+      isMobileMenuOpen ? "translate-x-0" : "translate-x-full"
+    }`}
+  >
+    {/* Close button (fixed at top-right ALWAYS) */}
+    <button
+      onClick={() => setIsMobileMenuOpen(false)}
+      className="absolute top-3 right-3 p-1 rounded-full hover:bg-gray-100 z-50"
+    >
+      <CloseIcon className="w-6 h-6 text-gray-800" />
+    </button>
+
+    {/* User Section */}
+    <div className="flex flex-col items-center text-center mt-10 mb-4 px-4">
+      {isLoggedIn() ? (
+        <>
+          <div className="w-14 h-14 rounded-full bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center text-white text-lg font-bold shadow-md">
+            {user.firstName.charAt(0).toUpperCase()}
+            {user.lastName.charAt(0).toUpperCase()}
+          </div>
+
+          <p className="mt-2 font-semibold text-gray-800">
+            {user.firstName} {user.lastName}
+          </p>
+          <p className="text-xs text-gray-500">{user.email}</p>
+        </>
+      ) : (
+        <>
+          <div className="w-14 h-14 rounded-full bg-gray-200 flex items-center justify-center text-gray-500 text-lg font-bold shadow-md">
+            ?
+          </div>
+          <p className="mt-2 text-sm text-gray-500">Guest User</p>
+        </>
+      )}
+    </div>
+
+    <hr className="border-gray-200" />
+
+    {/* Menu Items */}
+    <div className="px-4 py-3 space-y-2">
+      {menuItems.map((item) => (
         <div
-          className={`md:hidden fixed top-0 right-0 h-1/2 w-1/2 bg-white shadow-xl border-l border-gray-200 z-50 transform transition-transform duration-300 ${
-            isMobileMenuOpen ? "translate-x-0 " : "translate-x-full"
+          key={item}
+          onClick={() => {
+            setMenu(item);
+            setIsMobileMenuOpen(false);
+          }}
+          className={`px-3 py-2 rounded-lg font-medium capitalize transition-all cursor-pointer ${
+            menu === item
+              ? "bg-orange-100 text-orange-600 border-l-4 border-orange-500"
+              : "text-gray-700 hover:bg-gray-100"
           }`}
         >
-          <div className="flex items-center justify-between p-2">
-           
-            {/* Cross Icon in the menu popup */}
-           
-               {isLoggedIn() && (
-              <div className="">
-                <div className="w-12 h-12 bg-gradient-to-br from-purple-500 to-pink-500 rounded-full flex items-center justify-center flex-shrink-0">
-                  <span className="text-white font-bold text-sm">HS</span>
-                </div>
-                <p className="">
-                  <span className="pr-1"> {user.firstName}</span>
-                  <span>{user.lastName}</span>
-                </p>
-                <p className="text-xs">{user.email}</p>
-              </div>
-            )}
-            
-             <div className="pb-10">
-               <button
-                onClick={() => setIsMobileMenuOpen(false)}
-                className=" rounded-full hover:bg-gray-600 transition-colors"
-              >
-                <CloseIcon className="w-6 h-6 border border-orange-500 text-gray-800" />
-              </button>
-             </div>
-       
-          </div>
-          <hr className="text-orange-400" />
-
-          <div className="px-4 py-2 space-y-1">
-            {menuItems.map((item) => (
-              <div
-                key={item}
-                onClick={() => {
-                  setMenu(item);
-                  setIsMobileMenuOpen(false);
-                }}
-                className={`flex items-center justify-between px-2 py-1 rounded-xl font-medium capitalize transition-all duration-200 ${
-                  menu === item
-                    ? "bg-orange-50 text-orange-600 border-l-4 border-orange-500"
-                    : "text-gray-700 hover:bg-gray-50 hover:text-orange-600"
-                }`}
-              >
-                <span>{item}</span>
-              </div>
-            ))}
-
-            {/* Register Button */}
-            {!isLoggedIn() ? (
-              <button
-                onClick={() => {
-                  setShow(true);
-                  setIsMobileMenuOpen(false);
-                }}
-                className="w-full bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-700 text-white py-2  rounded-xl font-semibold transition-all duration-300"
-              >
-                Register
-              </button>
-            ) : (
-              <button
-                onClick={handleLogout}
-                className="w-full bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-700 text-white py-2 rounded-xl font-semibold transition-all duration-300"
-              >
-                Logout
-              </button>
-            )}
-          </div>
+          {item}
         </div>
+      ))}
+
+      {/* Register / Logout */}
+      {!isLoggedIn() ? (
+        <button
+          onClick={() => {
+            setShow(true);
+            setIsMobileMenuOpen(false);
+          }}
+          className="w-full bg-gradient-to-r from-orange-500 to-red-500 text-white py-2 rounded-xl font-semibold mt-2"
+        >
+          Register
+        </button>
+      ) : (
+        <button
+          onClick={handleLogout}
+          className="w-full bg-gradient-to-r from-orange-500 to-red-500 text-white py-2 rounded-xl font-semibold mt-2"
+        >
+          Logout
+        </button>
       )}
+    </div>
+  </div>
+)}
+
     </nav>
   );
 };
