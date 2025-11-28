@@ -136,26 +136,27 @@ export const Navbar = ({ setShow }) => {
 
     {/* User Section */}
     <div className="flex flex-col items-center text-center mt-10 mb-4 px-4">
-      {isLoggedIn() ? (
-        <>
-          <div className="w-14 h-14 rounded-full bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center text-white text-lg font-bold shadow-md">
-            {user.firstName.charAt(0).toUpperCase()}
-            {user.lastName.charAt(0).toUpperCase()}
-          </div>
+     {isLoggedIn() && user ? (
+  <>
+    <div className="w-14 h-14 rounded-full bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center text-white text-lg font-bold shadow-md">
+      {user?.firstName?.charAt(0)?.toUpperCase() || "U"}
+      {user?.lastName?.charAt(0)?.toUpperCase() || ""}
+    </div>
 
-          <p className="mt-2 font-semibold text-gray-800">
-            {user.firstName} {user.lastName}
-          </p>
-          <p className="text-xs text-gray-500">{user.email}</p>
-        </>
-      ) : (
-        <>
-          <div className="w-14 h-14 rounded-full bg-gray-200 flex items-center justify-center text-gray-500 text-lg font-bold shadow-md">
-            ?
-          </div>
-          <p className="mt-2 text-sm text-gray-500">Guest User</p>
-        </>
-      )}
+    <p className="mt-2 font-semibold text-gray-800">
+      {user?.firstName || ""} {user?.lastName || ""}
+    </p>
+    <p className="text-xs text-gray-500">{user?.email || ""}</p>
+  </>
+) : (
+  <>
+    <div className="w-14 h-14 rounded-full bg-gray-200 flex items-center justify-center text-gray-500 text-lg font-bold shadow-md">
+      ?
+    </div>
+    <p className="mt-2 text-sm text-gray-500">Guest User</p>
+  </>
+)}
+
     </div>
 
     <hr className="border-gray-200" />
