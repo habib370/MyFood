@@ -3,7 +3,7 @@ import { StoreContext } from "../context/StoreContext.jsx";
 import { assets } from "../assets/assets.js";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-
+import {FoodDisplaySkelton} from './FoodDisplaySkelton.jsx'
 export const FoodDisplay = ({ category }) => {
   const { food_list, cartItems, addToCart, deleteFromCart, isLoggedIn,url } =
     useContext(StoreContext);
@@ -15,6 +15,9 @@ export const FoodDisplay = ({ category }) => {
       addToCart(foodItem._id);
     }
   };
+    if (!food_list || !food_list.length) {
+  return <FoodDisplaySkelton />;
+}
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
       {/* Header */}
