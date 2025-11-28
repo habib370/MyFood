@@ -6,7 +6,7 @@ import { StoreContext } from "../context/StoreContext.jsx";
 import { UserProfile } from "./UserProfile.jsx";
 import MenuIcon from "@mui/icons-material/Menu";
 import CloseIcon from "@mui/icons-material/Close";
-
+import LogoutIcon from '@mui/icons-material/Logout';
 export const Navbar = ({ setShow }) => {
   const [menu, setMenu] = useState("home");
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -135,10 +135,10 @@ export const Navbar = ({ setShow }) => {
     </button>
 
     {/* User Section */}
-    <div className="flex flex-col items-center text-center mt-10 mb-4 px-4">
+    <div className="pl-2 pt-2">
      {isLoggedIn() && user ? (
   <>
-    <div className="w-14 h-14 rounded-full bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center text-white text-lg font-bold shadow-md">
+    <div className="w-12 h-12 rounded-full bg-gradient-to-br from-orange-500 to-red-500 flex items-center justify-center text-white text-lg font-bold shadow-md">
       {user?.firstName?.charAt(0)?.toUpperCase() || "U"}
       {user?.lastName?.charAt(0)?.toUpperCase() || ""}
     </div>
@@ -159,7 +159,7 @@ export const Navbar = ({ setShow }) => {
 
     </div>
 
-    <hr className="border-gray-200" />
+    <hr className="border-1 border-orange-400" />
 
     {/* Menu Items */}
     <div className="px-4 py-3 space-y-2">
@@ -194,10 +194,12 @@ export const Navbar = ({ setShow }) => {
       ) : (
         <button
           onClick={handleLogout}
-          className="w-full bg-gradient-to-r from-orange-500 to-red-500 text-white py-2 rounded-xl font-semibold mt-2"
+          className="w-full bg-gradient-to-r  from-orange-500 to-red-500 text-white py-2 rounded-xl font-semibold mt-2"
         >
+          <LogoutIcon style={{ fontSize: 18 }} />
           Logout
         </button>
+        
       )}
     </div>
   </div>
