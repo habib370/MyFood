@@ -212,7 +212,7 @@ export const PlaceOrder = () => {
                         >
                           <div className="flex items-center gap-2">
                             <img
-                              src={url + "/images/" + item.image}
+                              src={ item.imageUrl}
                               alt={item.name}
                               className="w-10 h-10 object-cover rounded-lg"
                             />
