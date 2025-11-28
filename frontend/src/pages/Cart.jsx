@@ -40,7 +40,7 @@ export const Cart = () => {
               {/* Image and Title combined on mobile */}
               <div className="flex items-center gap-3 md:block w-full md:w-auto">
                 <img
-                  src={url+"/images/"+item.image}
+                  src={item.imageUrl}
                   alt={item.name}
                   className="w-12 h-12 object-cover rounded flex-shrink-0"
                 />
