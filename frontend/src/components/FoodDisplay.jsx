@@ -52,7 +52,7 @@ export const FoodDisplay = ({ category }) => {
                 {/* Image Container */}
                 <div className="relative w-full h-48 mb-4 rounded-xl overflow-hidden">
                   <img
-                    src={url+"/images/"+foodItem.image}
+                    src={foodItem.imageUrl}
                     alt={foodItem.name}
                     className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
                   />
