@@ -136,7 +136,7 @@ export const List = ({url}) => {
                   {/* Image */}
                   <div className="col-span-4 sm:col-span-3 lg:col-span-2">
                     <img
-                      src={`${url}/images/${item.image}`}
+                      src={item.imageUrl}
                       alt={item.name}
                       className="w-10 h-10 sm:w-14 sm:h-14 lg:w-16 lg:h-16 object-cover rounded-lg shadow-sm border border-gray-200 group-hover:shadow-md transition-all duration-200"
                     />
