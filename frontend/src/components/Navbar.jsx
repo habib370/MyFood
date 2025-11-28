@@ -122,7 +122,7 @@ export const Navbar = ({ setShow }) => {
       {/* Mobile Dropdown */}
 {isMobileMenuOpen && (
   <div
-    className={`md:hidden fixed top-0 right-0 h-4/7 w-1/2 bg-white shadow-xl border-l border-gray-200 z-50 transform transition-transform duration-300 ${
+    className={`md:hidden fixed top-0 right-0 h-1/2 w-1/2 bg-white shadow-xl border-l border-gray-200 z-50 transform transition-transform duration-300 ${
       isMobileMenuOpen ? "translate-x-0" : "translate-x-full"
     }`}
   >
