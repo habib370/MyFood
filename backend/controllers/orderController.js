@@ -81,3 +81,15 @@ export const updateOrderController = async (req, res) => {
     res.status(500).json({ ok: false, message: error.message });
   }
 };
+export const userOrderList=async(req,res)=>{
+ try {
+   const orders=await orderModel.find({userId:req.userId});
+   console.log(orders)
+   if(!orders){
+    return res.json({ok:false,message:"no order found"})
+   }
+  res.json({ok:true,orders});
+ } catch (error) {
+  res.json({ok:false,message:error.message})
+ }
+}
