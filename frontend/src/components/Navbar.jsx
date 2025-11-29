@@ -29,7 +29,7 @@ export const Navbar = ({ setShow }) => {
 
   return (
     <nav className="bg-white shadow-lg border-b border-gray-100 sticky top-0 z-50">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex justify-between h-16 items-center">
+      <div className="max-w-screen mx-auto px-4 sm:px-6 lg:px-8 flex justify-between h-16 items-center">
         {/* Logo */}
         <Link to="/" className="flex-shrink-0">
           <Logo />
