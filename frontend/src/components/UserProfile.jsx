@@ -1,7 +1,7 @@
 import React, { useContext, useState, useRef, useEffect } from "react";
 import { StoreContext } from "../context/StoreContext.jsx";
 import LogoutIcon from '@mui/icons-material/Logout';
-
+import {Link} from 'react-router-dom'  
 export const UserProfile = () => {
   const { user, setToken, setUser } = useContext(StoreContext);
   const [isOpen, setIsOpen] = useState(false);
@@ -64,10 +64,10 @@ export const UserProfile = () => {
 
           {/* Menu items */}
           <div className="py-2">
-            <button className="w-full text-left px-4 py-2.5 text-sm text-gray-700 hover:bg-orange-50 hover:text-orange-600 transition-colors duration-200 flex items-center gap-3">
+            <Link to="/my-orders" className="w-full text-left px-4 py-2.5 text-sm text-gray-700 hover:bg-orange-50 hover:text-orange-600 transition-colors duration-200 flex items-center gap-3">
               <span className="text-base">🍽️</span>
               <span>My Orders</span>
-            </button>
+            </Link>
 
             <button className="w-full text-left px-4 py-2.5 text-sm text-gray-700 hover:bg-orange-50 hover:text-orange-600 transition-colors duration-200 flex items-center gap-3">
               <span className="text-base">🛒</span>
