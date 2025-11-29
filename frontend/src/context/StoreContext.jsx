@@ -1,7 +1,7 @@
 import { createContext, useState, useEffect } from "react";
 import { food_list } from "../assets/assets";
 import { jwtDecode } from "jwt-decode";
-import axios from 'axios'
+import axios from "axios";
 export const StoreContext = createContext(null);
 
 const StoreContextProvider = ({ children }) => {
@@ -9,15 +9,15 @@ const StoreContextProvider = ({ children }) => {
   const [token, setToken] = useState("");
   const [user, setUser] = useState(null);
   const url = "https://myfood-backend-fngt.onrender.com";
-   
-  const[food_list,setFoodList]=useState([])
+  //const url='http://localhost:4000'
+  const [food_list, setFoodList] = useState([]);
 
-  const getAllFood=async()=>{
-    const response=await axios.get(`${url}/api/food/list`);
-    if(response.data.ok){
-      setFoodList(response.data.data)
+  const getAllFood = async () => {
+    const response = await axios.get(`${url}/api/food/list`);
+    if (response.data.ok) {
+      setFoodList(response.data.data);
     }
-  }
+  };
   // Load token & user from localStorage on app load
   useEffect(() => {
     getAllFood();
@@ -26,28 +26,26 @@ const StoreContextProvider = ({ children }) => {
     if (savedToken) setToken(savedToken);
     if (savedUser) setUser(JSON.parse(savedUser));
   }, []);
-  
 
   // Persist token & user whenever they change
- useEffect(() => {
-  const syncData = async () => {
-    if (token) {
-      localStorage.setItem("token", token);
-      await getAllItemsFromTheCart(token);
-    } else {
-      localStorage.removeItem("token");
-    }
+  useEffect(() => {
+    const syncData = async () => {
+      if (token) {
+        localStorage.setItem("token", token);
+        await getAllItemsFromTheCart(token);
+      } else {
+        localStorage.removeItem("token");
+      }
 
-    if (user) {
-      localStorage.setItem("user", JSON.stringify(user));
-    } else {
-      localStorage.removeItem("user");
-    }
-  };
+      if (user) {
+        localStorage.setItem("user", JSON.stringify(user));
+      } else {
+        localStorage.removeItem("user");
+      }
+    };
 
-  syncData();
-}, [token, user]);
-
+    syncData();
+  }, [token, user]);
 
   // Auto logout when token expires
   useEffect(() => {
@@ -80,7 +78,6 @@ const StoreContextProvider = ({ children }) => {
     if (!token) return false;
     try {
       const decoded = jwtDecode(token);
-      setToken(decoded);
       const currentTime = Date.now() / 1000;
       return !(decoded.exp && decoded.exp < currentTime);
     } catch {
@@ -88,36 +85,46 @@ const StoreContextProvider = ({ children }) => {
     }
   };
 
-  const addToCart =async (itemId) => {
+  const addToCart = async (itemId) => {
     if (!cartItems[itemId]) {
       setCartItems((prev) => ({ ...prev, [itemId]: 1 }));
     } else {
       setCartItems((prev) => ({ ...prev, [itemId]: prev[itemId] + 1 }));
     }
-    await axios.post(url+"/api/cart/add",{itemId},{headers:{token}})
+    await axios.post(url + "/api/cart/add", { itemId }, { headers: { token } });
   };
 
-  const deleteFromCart = async(itemId) => {
+  const deleteFromCart = async (itemId) => {
     if (cartItems[itemId]) {
       setCartItems((prev) => ({ ...prev, [itemId]: prev[itemId] - 1 }));
     }
-    await axios.post(url+"/api/cart/remove",{itemId},{headers:{token}})
+    await axios.post(
+      url + "/api/cart/remove",
+      { itemId },
+      { headers: { token } }
+    );
   };
 
-  const removeAllFromCart = async(itemId) => {
+  const removeAllFromCart = async (itemId) => {
     if (cartItems[itemId]) {
       setCartItems((prev) => ({ ...prev, [itemId]: 0 }));
     }
-   
-    await axios.post(url+"/api/cart/deleteAll",{itemId},{headers:{token}})
+
+    await axios.post(
+      url + "/api/cart/deleteAll",
+      { itemId },
+      { headers: { token } }
+    );
   };
-  const getAllItemsFromTheCart=async(tkn)=>{
-    const response =await axios.get(url+"/api/cart/get",{headers:{token: tkn }})
-   
-    if(response.data.ok){
+  const getAllItemsFromTheCart = async (tkn) => {
+    const response = await axios.get(url + "/api/cart/get", {
+      headers: { token: tkn },
+    });
+
+    if (response.data.ok) {
       setCartItems(response.data.cartData);
     }
-  }
+  };
 
   const contextValue = {
     food_list,
