@@ -80,6 +80,7 @@ const StoreContextProvider = ({ children }) => {
     if (!token) return false;
     try {
       const decoded = jwtDecode(token);
+      setToken(decoded);
       const currentTime = Date.now() / 1000;
       return !(decoded.exp && decoded.exp < currentTime);
     } catch {
