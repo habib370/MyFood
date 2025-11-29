@@ -10,6 +10,7 @@ import { LoginPopup } from "./components/LoginPopup.jsx";
 import { Footer } from "./components/Footer.jsx";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import {Myorders} from './pages/Myorders.jsx'
 function App() {
   const [show, setShow] = useState(false);
 
@@ -24,6 +25,7 @@ function App() {
           <Route path="/cart" element={<Cart />} />
           <Route path="/order" element={<PlaceOrder />} />
            <Route path="/delivery" element={<Delivery />} />
+           <Route path="/my-orders" element={<Myorders />} />
         </Routes>
       </main>
 
