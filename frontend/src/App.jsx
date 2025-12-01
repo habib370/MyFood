@@ -11,13 +11,21 @@ import { Footer } from "./components/Footer.jsx";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import {Myorders} from './pages/Myorders.jsx'
+import {MobileNavbar} from './components/MobileNavbar.jsx'
 function App() {
   const [show, setShow] = useState(false);
 
   return (
     <div className="flex flex-col min-h-screen">
       {show && <LoginPopup setShow={setShow} />}
-      <Navbar setShow={setShow} />
+       <div className="hidden md:block">
+    <Navbar setShow={setShow} />
+  </div>
+
+  {/* Mobile Navbar */}
+  <div className="md:hidden">
+    <MobileNavbar setShow={setShow} />
+  </div>
 
       <main className="flex-1 ">
         <Routes>
@@ -25,7 +33,7 @@ function App() {
           <Route path="/cart" element={<Cart />} />
           <Route path="/order" element={<PlaceOrder />} />
            <Route path="/delivery" element={<Delivery />} />
-           <Route path="/my-orders" element={<Myorders />} />
+            <Route path="/my-orders" element={<Myorders />} />
         </Routes>
       </main>
 
