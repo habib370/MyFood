@@ -53,6 +53,7 @@ const StoreContextProvider = ({ children }) => {
 
     try {
       const decoded = jwtDecode(token);
+      setUser(decoded);
       if (decoded.exp) {
         const timeLeft = decoded.exp * 1000 - Date.now();
         if (timeLeft > 0) {
