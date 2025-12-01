@@ -70,7 +70,7 @@ export const MobileNavbar = ({ setShow }) => {
         {/* Close button */}
         <button
           onClick={() => setOpen(false)}
-          className="absolute top-3 right-3 p-1 rounded-full hover:bg-gray-100"
+          className="absolute top-3 right-3 pt-1 pl-6 rounded-full hover:bg-gray-100"
         >
           <CloseIcon className="w-6 h-6 text-gray-800" />
         </button>
@@ -129,3 +129,4 @@ export const MobileNavbar = ({ setShow }) => {
     </div>
   );
 };
+
