@@ -57,20 +57,28 @@ export const MobileNavbar = ({ setShow }) => {
             </span>
           )}
         </Link>
-        <UserProfile/>
+       {!isLoggedIn()? ( <button
+              onClick={() => {
+                setShow(true);
+                setOpen(false);
+              }}
+              className=" bg-gradient-to-r from-orange-500 to-red-500 text-white py-1 px-2 rounded-sm font-semibold mt-4"
+            >
+              Register
+            </button>):(<UserProfile/>) }
        </div>
       </div>
 
       {/* Slide Drawer */}
       <div
-        className={`fixed top-0 left-0 h-2/5 w-2/5  bg-white shadow-xl z-50 transform transition-transform duration-300 ${
+        className={`fixed top-0 left-0 h-2/5 w-3/7  bg-white shadow-xl z-50 transform transition-transform duration-300 ${
           open ? "translate-x-0" : "-translate-x-full"
         }`}
       >
         {/* Close button */}
         <button
           onClick={() => setOpen(false)}
-          className="absolute top-3 right-3 p-1 rounded-full hover:bg-gray-100"
+          className="absolute top-3 right-3 pt-1 translate-x-2 rounded-full hover:bg-gray-100"
         >
           <CloseIcon className="w-6 h-6 text-gray-800" />
         </button>
@@ -97,25 +105,8 @@ export const MobileNavbar = ({ setShow }) => {
             </Link>
           ))}
 
-          {/* Register / Logout */}
-          {!isLoggedIn() ? (
-            <button
-              onClick={() => {
-                setShow(true);
-                setOpen(false);
-              }}
-              className="w-full bg-gradient-to-r from-orange-500 to-red-500 text-white py-2 rounded-xl font-semibold mt-4"
-            >
-              Register
-            </button>
-          ) : (
-            <button
-              onClick={handleLogout}
-              className="w-full bg-gradient-to-r from-orange-500 to-red-500 text-white py-2 rounded-xl font-semibold mt-4 flex items-center justify-center gap-2"
-            >
-              <LogoutIcon /> Logout
-            </button>
-          )}
+         
+          
         </div>
       </div>
 
@@ -129,3 +120,4 @@ export const MobileNavbar = ({ setShow }) => {
     </div>
   );
 };
+
