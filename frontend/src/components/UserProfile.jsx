@@ -2,6 +2,8 @@ import React, { useContext, useState, useRef, useEffect } from "react";
 import { StoreContext } from "../context/StoreContext.jsx";
 import LogoutIcon from '@mui/icons-material/Logout';
 import {Link} from 'react-router-dom'  
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 export const UserProfile = () => {
   const { user, setToken, setUser } = useContext(StoreContext);
   const [isOpen, setIsOpen] = useState(false);
@@ -43,10 +45,11 @@ export const UserProfile = () => {
     <div className="relative" ref={ref}>
       {/* Avatar */}
       <div
-        className="h-12 w-12 rounded-full flex items-center justify-center bg-gradient-to-r from-orange-500 to-red-500 text-white font-bold text-lg cursor-pointer shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 border-2 border-white"
+      className="flex items-center"
         onClick={() => setIsOpen(!isOpen)}
       >
-        {firstLetter}
+        <p className="text-sm font-semibold">{user?.firstName}</p>
+       {!isOpen? <ExpandMoreIcon/>:<KeyboardArrowUpIcon/>}
       </div>
 
       {/* Dropdown */}
