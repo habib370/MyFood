@@ -1,7 +1,8 @@
 import React, { useContext, useState } from "react";
 import { StoreContext } from "../context/StoreContext.jsx";
+import axios from 'axios'
 export const EditProfile = () => {
-  const { user } = useContext(StoreContext);
+  const { user ,url} = useContext(StoreContext);
   const [nameData, setNameData] = useState({
     firstName: "",
     lastName: "",
@@ -10,12 +11,13 @@ export const EditProfile = () => {
     currPass: "",
     newPass: "",
   });
-  const [otpEmail,setOtpEmail]=useState("")
+  const [email,setEmail]=useState("")
   const [isOtpSent,setIsOtpSent]=useState(false);
   const [otp,setOtp]=useState('');
   const otpSubmitHandler=()=>{
-    console.log("otp sent")
+    //console.log("otp sent")
     setIsOtpSent(true);
+    fetchData()
 
   }
   const nameSubmitHandler = (e) => {
@@ -25,7 +27,21 @@ export const EditProfile = () => {
   const passSubmitHandler = (e) => {
     e.preventDefault();
     console.log(passData);
+    
   };
+
+  const fetchData = async () => {
+  try {
+    const response = await axios.post(url + '/api/user/verify-email', { email });
+    if(response.data.ok){
+       setIsOtpSent(true);
+    }
+    console.log(response.data.message);
+  } catch (err) {
+    console.error(err.response?.data?.message || err.message);
+  }
+}
+
   return (
     <div className="flex flex-col items-center justify-center gap-y-30 pt-5 pb-5">
       <form onSubmit={(e) => nameSubmitHandler(e)}>
@@ -73,10 +89,10 @@ export const EditProfile = () => {
             <input
               type="email"
               placeholder={user?.email}
-               name="otpEmail"
-              value={otpEmail}
+               name="email"
+              value={email}
                onChange={(e) =>
-               setOtpEmail(e.target.value)
+               setEmail(e.target.value)
              }
               className="w-xl border border-gray-300 rounded-xl px-4 py-3 shadow-sm focus:outline-none focus:ring-1 focus:ring-gray-400"
             />
