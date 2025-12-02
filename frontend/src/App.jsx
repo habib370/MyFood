@@ -5,35 +5,39 @@ import { Route, Routes } from "react-router-dom";
 import { Home } from "./pages/Home.jsx";
 import { Cart } from "./pages/Cart.jsx";
 import { PlaceOrder } from "./pages/PlaceOrder.jsx";
-import {Delivery} from './pages/Delivery.jsx'
+import { Delivery } from "./pages/Delivery.jsx";
 import { LoginPopup } from "./components/LoginPopup.jsx";
 import { Footer } from "./components/Footer.jsx";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import {Myorders} from './pages/Myorders.jsx'
-import {MobileNavbar} from './components/MobileNavbar.jsx'
+import { Myorders } from "./pages/Myorders.jsx";
+import { MobileNavbar } from "./components/MobileNavbar.jsx";
+import { Profile } from "./pages/Profile.jsx";
+import {EditProfile} from './pages/EditProfile.jsx'
 function App() {
   const [show, setShow] = useState(false);
 
   return (
     <div className="flex flex-col min-h-screen">
       {show && <LoginPopup setShow={setShow} />}
-       <div className="hidden md:block">
-    <Navbar setShow={setShow} />
-  </div>
+      <div className="hidden md:block">
+        <Navbar setShow={setShow} />
+      </div>
 
-  {/* Mobile Navbar */}
-  <div className="md:hidden">
-    <MobileNavbar setShow={setShow} />
-  </div>
+      {/* Mobile Navbar */}
+      <div className="md:hidden">
+        <MobileNavbar setShow={setShow} />
+      </div>
 
       <main className="flex-1 ">
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/cart" element={<Cart />} />
           <Route path="/order" element={<PlaceOrder />} />
-           <Route path="/delivery" element={<Delivery />} />
-            <Route path="/my-orders" element={<Myorders />} />
+          <Route path="/delivery" element={<Delivery />} />
+          <Route path="/my-orders" element={<Myorders />} />
+          <Route path="/profile" element={<Profile />} />
+           <Route path="/edit-profile" element={<EditProfile />} />
         </Routes>
       </main>
 
@@ -72,7 +76,6 @@ function App() {
       />
     </div>
   );
-  
 }
 
 export default App;
