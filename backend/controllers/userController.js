@@ -3,14 +3,14 @@ import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
 import validator from "validator";
 //import transporter from '../config/nodeMailer.js'
-import sendMail from '../config/sendMail.js'
+import sendMail from "../config/sendMail.js";
 const createToken = (user) => {
   return jwt.sign(
     {
       id: user._id,
       firstName: user.firstName,
       lastName: user.lastName,
-      email: user.email
+      email: user.email,
     },
     process.env.JWT_SECRET,
     { expiresIn: "7d" }
@@ -50,7 +50,8 @@ export const register = async (req, res) => {
     });
     const user = await newUser.save();
     const token = createToken(user);
-    res.json({   ok: true,
+    res.json({
+      ok: true,
       message: "registered successfully",
       token,
       user: {
@@ -58,7 +59,8 @@ export const register = async (req, res) => {
         firstName: user.firstName,
         lastName: user.lastName,
         email: user.email,
-      }, });
+      },
+    });
   } catch (error) {
     console.error("Error from register:", error);
     res.status(500).json({ ok: false, error: error.message });
@@ -81,7 +83,8 @@ export const login = async (req, res) => {
     }
     const token = createToken(user);
 
-    res.json({   ok: true,
+    res.json({
+      ok: true,
       message: "logged in successfully",
       token,
       user: {
@@ -89,7 +92,8 @@ export const login = async (req, res) => {
         firstName: user.firstName,
         lastName: user.lastName,
         email: user.email,
-      }, });
+      },
+    });
   } catch (error) {
     console.error("Error from login:", error);
     res.status(500).json({ ok: false, error: error.message });
@@ -113,24 +117,61 @@ export const verifyEmail = async (req, res) => {
     user.otpExpires = Date.now() + 10 * 60 * 1000; // 10 minutes
     await user.save();
 
-    // Send email
-    // const mailOptions={
-    //   from:"habibsharkar6@gmail.com",
-    //   to:email,
-    //   subject:'wellcome to my website',
-    //   text:`your otp is ${otp}`
-    // }
-    // await transporter.sendMail(mailOptions)
-     await sendMail(
+    await sendMail(
       email,
       "Your verification code",
-      `your otp is ${otp}`
+      `<p>Your OTP code is <strong>${otp}</strong></p>`
     );
 
     return res.json({ ok: true, message: "OTP sent" });
-
   } catch (error) {
     console.error("Error in /verify-email:", error);
-    return res.status(500).json({ ok: false, message: error.message || "Internal server error" });
+    return res
+      .status(500)
+      .json({ ok: false, message: error.message || "Internal server error" });
   }
 };
+
+export const toChangeName = async (req, res) => {
+  const { firstName, lastName } = req.body;
+  if (!firstName || !lastName) {
+    return res.json({ ok: false, message: "entities required" });
+  }
+  const userId = req.userId;
+  try {
+    const user =await userModel.findByIdAndUpdate(
+      userId,
+      { firstName, lastName },
+      { new: true }
+    );
+    
+    if (!user) {
+      return res.json({ ok: false, message: "user not found" });
+    }
+    res.json({ok:true,message:"updated succesfully",user})
+  } catch (error) {
+    res.json({ok:false,message:error.message})
+  }
+};
+
+export const toChagePass=async(req,res)=>{
+  const {currPass,newPass}=req.body;
+  const userId=req.userId;
+  try {
+    const user=await userModel.findById(userId);
+    if(!user){
+      return res.json({ok:false,message:"user not found"})
+    }
+    const isMatched=await bcrypt.compare(currPass,user.password);
+    if(!isMatched){
+      return res.json({ok:false,message:"wrong current password given"})
+    }
+    const salt = await bcrypt.genSalt(10);
+    const hashPass = await bcrypt.hash(newPass, salt);
+    user.password=hashPass;
+    await user.save();
+    res.json({ok:true,message:"password updated"});
+  } catch (error) {
+    res.json({ok:false,message:error.message})
+  }
+}
