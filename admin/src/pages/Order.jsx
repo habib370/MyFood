@@ -88,7 +88,7 @@ export const Order = ({ url }) => {
           </div>
         ) : (
           <div className="space-y-3 sm:space-y-4">
-            {orders.map((order) => ( !order.payment || order.status!='delivered' &&
+            {orders.map((order) => ( (!order.payment || order.status!='delivered') &&
               <div
                 key={order._id}
                 className="bg-white rounded-lg sm:rounded-xl shadow-sm sm:shadow-md border border-gray-200 hover:shadow-md sm:hover:shadow-lg transition-all duration-200 overflow-hidden"
