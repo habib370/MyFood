@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { toast } from "react-toastify";
-
+import { MdAttachMoney } from "react-icons/md";
 export const Order = ({ url }) => {
   const token = localStorage.getItem("token");
   const [orders, setOrders] = useState([]);
@@ -88,7 +88,7 @@ export const Order = ({ url }) => {
           </div>
         ) : (
           <div className="space-y-3 sm:space-y-4">
-            {orders.map((order) => (
+            {orders.map((order) => ( !order.payment || order.status!='delivered' &&
               <div
                 key={order._id}
                 className="bg-white rounded-lg sm:rounded-xl shadow-sm sm:shadow-md border border-gray-200 hover:shadow-md sm:hover:shadow-lg transition-all duration-200 overflow-hidden"
@@ -105,8 +105,8 @@ export const Order = ({ url }) => {
                       </p>
                     </div>
                     <div className="flex items-center gap-2">
-                      <span className="text-xs sm:text-sm font-semibold bg-white bg-opacity-20 px-2 py-1 rounded-full text-orange-600">
-                        💰 ${order.amount}
+                      <span className="text-xs sm:text-sm font-semibold bg-white bg-opacity-20 px-3 py-1 rounded-sm text-orange-600">
+                      ${order.amount}
                       </span>
                     </div>
                   </div>
@@ -136,6 +136,28 @@ export const Order = ({ url }) => {
                       ))}
                     </div>
                   </div>
+                    <div className="mb-4 p-3 bg-blue-50 rounded-lg border border-blue-200">
+                        <h3 className="text-sm font-semibold text-gray-800 mb-2 flex items-center gap-1">
+                          <span className="text-base">🏠</span>
+                          Delivery Address
+                        </h3>
+                        <div className="text-gray-700 text-xs space-y-1">
+                          <p>
+                            <strong>Name:</strong> {order.address?.fullname}
+                          </p>
+                          <p>
+                            <strong>City:</strong> {order.address?.city}
+                          </p>
+                          <p className="truncate">
+                            <strong>Address:</strong> {order.address?.street}
+                          </p>
+                          {order.address?.extraInfo && (
+                            <p>
+                              <strong>Note:</strong> {order.address.extraInfo}
+                            </p>
+                          )}
+                        </div>
+                      </div>
 
                   {/* Status Controls */}
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-3 mt-3 sm:mt-4 pt-3 sm:pt-4 border-t border-gray-200">
