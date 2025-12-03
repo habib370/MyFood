@@ -16,7 +16,7 @@ export const EditProfile = () => {
   const [otp,setOtp]=useState('');
   const otpSubmitHandler=()=>{
     //console.log("otp sent")
-    setIsOtpSent(true);
+    
     fetchData()
 
   }
@@ -36,7 +36,7 @@ export const EditProfile = () => {
     if(response.data.ok){
        setIsOtpSent(true);
     }
-    console.log(response.data.message);
+    console.log(response.data);
   } catch (err) {
     console.error(err.response?.data?.message || err.message);
   }
