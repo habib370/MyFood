@@ -2,7 +2,7 @@ import userModel from "../models/userModel.js";
 import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
 import validator from "validator";
-import transporter from '../config/nodeMailer.js'
+//import transporter from '../config/nodeMailer.js'
 import sendMail from '../config/sendMail.js'
 const createToken = (user) => {
   return jwt.sign(
