@@ -38,7 +38,7 @@ export const Myorders = () => {
           No delivered and paid orders yet.
         </p>
       ) : (
-        <div className="space-y-4 max-w-screen mx-auto">
+        <div className="flex flex-col gap-y-15 max-w-screen mx-auto">
           {deliveredOrders.map((order) => (
             <div
               key={order._id}
@@ -106,3 +106,4 @@ export const Myorders = () => {
     </div>
   );
 };
+
