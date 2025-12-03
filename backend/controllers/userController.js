@@ -2,7 +2,8 @@ import userModel from "../models/userModel.js";
 import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
 import validator from "validator";
-import {transporter} from './mailer.js'
+import transporter from '../config/nodeMailer.js'
+import sendMail from '../config/sendMail.js'
 const createToken = (user) => {
   return jwt.sign(
     {
@@ -99,41 +100,37 @@ export const verifyEmail = async (req, res) => {
   try {
     const { email } = req.body;
 
-    if (!email) {
-      return res.json({ ok: false, message: "Email required" });
-    }
+    if (!email) return res.json({ ok: false, message: "Email required" });
 
     const user = await userModel.findOne({ email });
-
-    if (!user) {
-      return res.json({ ok: false, message: "User not found" });
-    }
+    if (!user) return res.json({ ok: false, message: "User not found" });
 
     // Generate 6-digit OTP
     const otp = Math.floor(100000 + Math.random() * 900000);
 
-    // Send OTP via email
-    const mailOptions = {
-      from: process.env.EMAIL_USER,
-      to: email,
-      subject: "Your OTP Code",
-      text: `Your OTP code is: ${otp}. It will expire in 10 minutes.`,
-    };
-
-    await transporter.sendMail(mailOptions);
-
-    // You can save OTP to database or cache for verification later
+    // Save OTP in DB
     user.otp = otp;
     user.otpExpires = Date.now() + 10 * 60 * 1000; // 10 minutes
     await user.save();
+
+    // Send email
+    // const mailOptions={
+    //   from:"habibsharkar6@gmail.com",
+    //   to:email,
+    //   subject:'wellcome to my website',
+    //   text:`your otp is ${otp}`
+    // }
+    // await transporter.sendMail(mailOptions)
+     await sendMail(
+      email,
+      "Your verification code",
+      `your otp is ${otp}`
+    );
 
     return res.json({ ok: true, message: "OTP sent" });
 
   } catch (error) {
     console.error("Error in /verify-email:", error);
-    return res.json({
-      ok: false,
-      message: error.message || "Internal server error",
-    });
+    return res.status(500).json({ ok: false, message: error.message || "Internal server error" });
   }
 };
