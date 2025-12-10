@@ -15,7 +15,7 @@ export const ExploreMenu = ({ category, setCategory }) => {
       </div>
 
       {/* Menu Categories */}
-      <div className="flex gap-4 md:gap-8 overflow-x-auto scrollbar-hide py-4 px-2">
+      <div className="flex justify-between md:gap-8 overflow-x-auto scrollbar-hide py-4 px-2">
         {menu_list.map((item, index) => {
           const isActive = category === item.menu_name;
 
