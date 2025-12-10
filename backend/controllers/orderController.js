@@ -59,7 +59,7 @@ export const updateOrderController = async (req, res) => {
     const { orderId, field, value } = req.body;
 
     // Validate required fields
-    if (!orderId || !field || !value) {
+    if (!orderId || !field || value===undefined) {
       return res.status(400).json({ ok: false, message: "Missing required fields" });
     }
 
