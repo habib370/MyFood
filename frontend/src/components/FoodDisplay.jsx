@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React, { useContext,useEffect } from "react";
 import { Link } from "react-router-dom";
 import { StoreContext } from "../context/StoreContext.jsx";
 import { assets } from "../assets/assets.js";
@@ -6,8 +6,25 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import {FoodDisplaySkelton} from './FoodDisplaySkelton.jsx'
 export const FoodDisplay = ({ category }) => {
-  const { food_list, cartItems, addToCart, deleteFromCart, isLoggedIn,url } =
+  const { food_list, cartItems, addToCart, deleteFromCart, isLoggedIn,url,fetchAllReview } =
     useContext(StoreContext);
+   const[reviewCount,setReviewCounts]=React.useState({});
+   useEffect(() => {
+  const loadAllReviewCounts = async () => {
+    const counts = {};
+
+    for (let item of food_list) {
+      const count = await fetchAllReview(item._id);
+      counts[item._id] = count;
+    }
+
+    setReviewCounts(counts);
+  };
+
+  if (food_list.length > 0) {
+    loadAllReviewCounts();
+  }
+}, [food_list]);
 
   const handleAddToCart = (foodItem) => {
     if (!isLoggedIn()) {
@@ -39,7 +56,7 @@ export const FoodDisplay = ({ category }) => {
           )
           .map((foodItem) => {
             const quantity = cartItems[foodItem._id] || 0;
-
+           
             return (
               <div
                 key={foodItem._id}
@@ -90,7 +107,7 @@ export const FoodDisplay = ({ category }) => {
                         className="w-20 opacity-90"
                       />
                       <span className="text-xs text-gray-500 font-medium">
-                        (4.5)
+                         ({reviewCount[foodItem._id]})
                       </span>
                     </div>
                   </div>
