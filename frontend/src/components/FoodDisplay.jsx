@@ -1,4 +1,5 @@
 import React, { useContext } from "react";
+import { Link } from "react-router-dom";
 import { StoreContext } from "../context/StoreContext.jsx";
 import { assets } from "../assets/assets.js";
 import { ToastContainer, toast } from "react-toastify";
@@ -51,13 +52,16 @@ export const FoodDisplay = ({ category }) => {
               >
                 {/* Image Container */}
                 <div className="relative w-full h-48 mb-4 rounded-xl overflow-hidden">
+                   <Link to={`/item/${foodItem._id}`}>
                   <img
                     src={foodItem.imageUrl}
                     alt={foodItem.name}
                     className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
                   />
+                
                   {/* Gradient Overlay */}
                   <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                    </Link>
                 </div>
 
                 {/* Content */}
