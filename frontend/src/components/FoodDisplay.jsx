@@ -98,7 +98,7 @@ export const FoodDisplay = ({ category }) => {
                       <h3 className="text-2xl font-bold bg-gradient-to-r from-orange-600 to-red-600 bg-clip-text text-transparent">
                         ${foodItem.price}
                       </h3>
-                      <p className="text-xs text-gray-500">per serving</p>
+                    
                     </div>
                     <div className="flex items-center gap-2">
                       <img
