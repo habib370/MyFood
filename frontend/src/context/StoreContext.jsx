@@ -8,8 +8,9 @@ const StoreContextProvider = ({ children }) => {
   const [cartItems, setCartItems] = useState({});
   const [token, setToken] = useState("");
   const [user, setUser] = useState(null);
-  const url = "https://myfood-backend-fngt.onrender.com";
-  //const url='http://localhost:4000'
+
+   const url = "https://myfood-backend-fngt.onrender.com";
+  //const url = "http://localhost:4000";
   const [food_list, setFoodList] = useState([]);
 
   const getAllFood = async () => {
@@ -127,6 +128,24 @@ const StoreContextProvider = ({ children }) => {
     }
   };
 
+
+  const fetchAllReview = async (itemId) => {
+  if (!itemId) return 0;
+
+  try {
+    const res = await axios.get(`${url}/api/comment/${itemId}`);
+    if (res.data.ok) {
+      return res.data.comments.length;  
+    }
+    return 0;
+  } catch (err) {
+    console.error(err);
+    return 0;
+  }
+};
+
+
+
   const contextValue = {
     food_list,
     cartItems,
@@ -140,6 +159,7 @@ const StoreContextProvider = ({ children }) => {
     isLoggedIn,
     setUser,
     user,
+    fetchAllReview
   };
 
   return (
