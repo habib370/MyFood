@@ -14,6 +14,7 @@ import { Myorders } from "./pages/Myorders.jsx";
 import { MobileNavbar } from "./components/MobileNavbar.jsx";
 import { Profile } from "./pages/Profile.jsx";
 import {EditProfile} from './pages/EditProfile.jsx'
+import {SingleFoodItem} from './pages/SIngleFoodItem.jsx'
 function App() {
   const [show, setShow] = useState(false);
 
@@ -32,12 +33,13 @@ function App() {
       <main className="flex-1 ">
         <Routes>
           <Route path="/" element={<Home />} />
+           <Route path="/item/:itemId" element={<SingleFoodItem />} />
           <Route path="/cart" element={<Cart />} />
           <Route path="/order" element={<PlaceOrder />} />
           <Route path="/delivery" element={<Delivery />} />
           <Route path="/my-orders" element={<Myorders />} />
           <Route path="/profile" element={<Profile />} />
-           <Route path="/edit-profile" element={<EditProfile />} />
+          <Route path="/edit-profile" element={<EditProfile />} />
         </Routes>
       </main>
 
