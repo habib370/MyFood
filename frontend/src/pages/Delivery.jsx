@@ -101,7 +101,7 @@ export const Delivery = () => {
           </div>
         ) : (
           <div className="space-y-4">
-            {orders.map((order) => ( (!order.payment && order.status!='delivered') &&
+            {orders.map((order) => ( (!order.payment || order.status!='delivered') &&
               <div
                 key={order._id}
                 className="bg-white rounded-xl shadow-md border border-gray-200 overflow-hidden"
