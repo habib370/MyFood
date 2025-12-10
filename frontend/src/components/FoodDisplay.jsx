@@ -109,6 +109,7 @@ export const FoodDisplay = ({ category }) => {
                       <span className="text-xs text-gray-500 font-medium">
                          ({reviewCount[foodItem._id]})
                       </span>
+                       <span className="text-xs text-gray-500 font-medium">reviews</span>
                     </div>
                   </div>
 
