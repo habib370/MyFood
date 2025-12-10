@@ -1,4 +1,6 @@
 import userModel from "../models/userModel.js";
+import foodModel from '../models/foodModel.js'
+import Comments from '../models/commentModel.js'
 import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
 import validator from "validator";
@@ -173,5 +175,46 @@ export const toChagePass=async(req,res)=>{
     res.json({ok:true,message:"password updated"});
   } catch (error) {
     res.json({ok:false,message:error.message})
+  }
+}
+
+export const toComment=async(req,res)=>{
+  const {commentText}=req.body;
+  if(!commentText){
+    return res.json("no comment yet")
+  }
+  try {
+    const userId=req.userId;
+   const user=await userModel.findById(userId);
+   if(!user){
+    return res.json({ok:false,message:"user not found"});
+   }
+   const item=await foodModel.findById(req.params.itemId);
+   if(!item){
+    return res.json({ok:false,message:"item not found"});
+   }
+
+    const newComment = new Comments({
+      userId: user._id,
+      firstName:user.firstName,
+      lastName:user.lastName,
+      itemId: item._id,
+      commentText: commentText,
+    });
+    await newComment.save();
+    res.json({ ok: true, comment: newComment });
+  } catch (error) {
+     console.log(error);
+    res.json({ ok: false, message: `from toComment:${error.message}` });
+  }
+}
+export const getAllComments=async(req,res)=>{
+  try {
+
+    const comments=await Comments.find({itemId:req.params.itemId})
+    res.json({ok:true,comments:comments})
+  } catch (error) {
+      console.log(error);
+    res.json({ ok: false, message: `from getAllComments:${error.message}` });
   }
 }
