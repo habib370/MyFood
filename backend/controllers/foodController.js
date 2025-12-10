@@ -87,3 +87,16 @@ export const deleteFoodItem = async (req, res) => {
     res.status(500).json({ ok: false, error: error.message });
   }
 };
+
+export const getSingleItem=async(req,res)=>{
+  try {
+    const item=await foodModel.findById(req.params.itemId);
+    if(!item){
+      res.json({ok:false,message:"item not found"})
+    }
+    res.json({ok:true,item:item})
+  } catch (error) {
+     console.log(error);
+    res.json({ ok: false, message: `from getSingleItem:${error.message}` });
+  }
+}
