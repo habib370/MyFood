@@ -1,30 +1,39 @@
-import React, { useContext,useEffect } from "react";
+import React, { useContext, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { StoreContext } from "../context/StoreContext.jsx";
 import { assets } from "../assets/assets.js";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import {FoodDisplaySkelton} from './FoodDisplaySkelton.jsx'
+import { FoodDisplaySkelton } from "./FoodDisplaySkelton.jsx";
+import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
+
 export const FoodDisplay = ({ category }) => {
-  const { food_list, cartItems, addToCart, deleteFromCart, isLoggedIn,url,fetchAllReview } =
-    useContext(StoreContext);
-   const[reviewCount,setReviewCounts]=React.useState({});
-   useEffect(() => {
-  const loadAllReviewCounts = async () => {
-    const counts = {};
+  const {
+    food_list,
+    cartItems,
+    addToCart,
+    deleteFromCart,
+    isLoggedIn,
+    url,
+    fetchAllReview,
+  } = useContext(StoreContext);
+  const [reviewCount, setReviewCounts] = React.useState({});
+  useEffect(() => {
+    const loadAllReviewCounts = async () => {
+      const counts = {};
 
-    for (let item of food_list) {
-      const count = await fetchAllReview(item._id);
-      counts[item._id] = count;
+      for (let item of food_list) {
+        const count = await fetchAllReview(item._id);
+        counts[item._id] = count;
+      }
+
+      setReviewCounts(counts);
+    };
+
+    if (food_list.length > 0) {
+      loadAllReviewCounts();
     }
-
-    setReviewCounts(counts);
-  };
-
-  if (food_list.length > 0) {
-    loadAllReviewCounts();
-  }
-}, [food_list]);
+  }, [food_list]);
 
   const handleAddToCart = (foodItem) => {
     if (!isLoggedIn()) {
@@ -33,9 +42,9 @@ export const FoodDisplay = ({ category }) => {
       addToCart(foodItem._id);
     }
   };
-    if (!food_list || !food_list.length) {
-  return <FoodDisplaySkelton />;
-}
+  if (!food_list || !food_list.length) {
+    return <FoodDisplaySkelton />;
+  }
   return (
     <div className="max-w-screen mx-auto px-4 sm:px-6 lg:px-8 py-8">
       {/* Header */}
@@ -56,7 +65,7 @@ export const FoodDisplay = ({ category }) => {
           )
           .map((foodItem) => {
             const quantity = cartItems[foodItem._id] || 0;
-           
+
             return (
               <div
                 key={foodItem._id}
@@ -69,24 +78,39 @@ export const FoodDisplay = ({ category }) => {
               >
                 {/* Image Container */}
                 <div className="relative w-full h-48 mb-4 rounded-xl overflow-hidden">
-                   <Link to={`/item/${foodItem._id}`}>
-                  <img
-                    src={foodItem.imageUrl}
-                    alt={foodItem.name}
-                    className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
-                  />
-                
-                  {/* Gradient Overlay */}
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-                    </Link>
+                  <Link to={`/item/${foodItem._id}`}>
+                    <img
+                      src={foodItem.imageUrl}
+                      alt={foodItem.name}
+                      className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                    />
+                    <div>
+                      <button className="px-2 py-1 rounded-sm bg-orange-400 text-white ">
+                        <ShoppingCartIcon />
+                      </button>
+                    </div>
+
+                    {/* Gradient Overlay */}
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                  </Link>
                 </div>
 
                 {/* Content */}
                 <div className="space-y-3">
                   <div>
-                    <h2 className="text-xl font-bold text-gray-900 group-hover:text-orange-600 transition-colors line-clamp-1">
-                      {foodItem.name}
-                    </h2>
+                    <div className="flex justify-between items-center">
+                      <h2 className="text-xl font-bold text-gray-900 group-hover:text-orange-600 transition-colors line-clamp-1">
+                        {foodItem.name}
+                      </h2>
+                      <Link
+                        to="/cart"
+                        onClick={() => addToCart(foodItem._id)}
+                        className="z-20 px-3 py-2 bg-gradient-to-r from-yellow-500 to-orange-600  text-white  text-sm font-bold  rounded-lg shadow-lg hover:shadow-xl transition-all duration-200  hover:scale-105 active:scale-95"
+                      >
+                        <ShoppingCartIcon />
+                      </Link>
+                    </div>
+
                     <p className="text-gray-600 text-sm mt-2 line-clamp-2 leading-relaxed">
                       {foodItem.description}
                     </p>
@@ -98,7 +122,6 @@ export const FoodDisplay = ({ category }) => {
                       <h3 className="text-2xl font-bold bg-gradient-to-r from-orange-600 to-red-600 bg-clip-text text-transparent">
                         ${foodItem.price}
                       </h3>
-                    
                     </div>
                     <div className="flex items-center gap-2">
                       <img
@@ -107,9 +130,11 @@ export const FoodDisplay = ({ category }) => {
                         className="w-20 opacity-90"
                       />
                       <span className="text-xs text-gray-500 font-medium">
-                         ({reviewCount[foodItem._id]})
+                        ({reviewCount[foodItem._id]})
                       </span>
-                       <span className="text-xs text-gray-500 font-medium">reviews</span>
+                      <span className="text-xs text-gray-500 font-medium">
+                        reviews
+                      </span>
                     </div>
                   </div>
 
