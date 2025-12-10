@@ -307,9 +307,27 @@ const handleAddToCart = (foodItem) => {
                     <div className="flex items-start justify-between mb-4">
                       <div>
                         <div className="flex items-center gap-2 mb-2">
-                          <div className="w-10 h-10 bg-gradient-to-r from-orange-400 to-orange-500 rounded-full flex items-center justify-center text-white font-bold">
-                            {c.firstName?.charAt(0)?.toUpperCase() || 'U'}
-                          </div>
+                         <div
+  className={`w-10 h-10 rounded-full flex items-center justify-center text-white font-bold`}
+  style={{
+    backgroundColor: (() => {
+      const firstChar = (c.firstName?.charAt(0) || 'U').toUpperCase();
+      const colors = {
+        A: '#F87171', B: '#FBBF24', C: '#34D399', D: '#60A5FA',
+        E: '#A78BFA', F: '#F472B6', G: '#FCD34D', H: '#6EE7B7',
+        I: '#3B82F6', J: '#9333EA', K: '#EF4444', L: '#F59E0B',
+        M: '#10B981', N: '#3B82F6', O: '#8B5CF6', P: '#EC4899',
+        Q: '#FACC15', R: '#22C55E', S: '#2563EB', T: '#7C3AED',
+        U: '#DB2777', V: '#F59E0B', W: '#14B8A6', X: '#6366F1',
+        Y: '#D946EF', Z: '#F43F5E',
+      };
+      return colors[firstChar] || '#6B7280'; // fallback gray
+    })()
+  }}
+>
+  {c.firstName?.charAt(0)?.toUpperCase() || 'U'}
+</div>
+
                           <div className="flex gap-x-2">
                             <p className="font-semibold text-gray-900">
                               {c.firstName || 'Anonymous User'}
@@ -352,4 +370,5 @@ const handleAddToCart = (foodItem) => {
       </div>
     </div>
   );
+
 };
