@@ -84,11 +84,7 @@ export const FoodDisplay = ({ category }) => {
                       alt={foodItem.name}
                       className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
                     />
-                    <div>
-                      <button className="px-2 py-1 rounded-sm bg-orange-400 text-white ">
-                        <ShoppingCartIcon />
-                      </button>
-                    </div>
+                   
 
                     {/* Gradient Overlay */}
                     <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
@@ -103,11 +99,11 @@ export const FoodDisplay = ({ category }) => {
                         {foodItem.name}
                       </h2>
                       <Link
-                        to="/cart"
+                        to="/order"
                         onClick={() => addToCart(foodItem._id)}
                         className="z-20 px-3 py-2 bg-gradient-to-r from-yellow-500 to-orange-600  text-white  text-sm font-bold  rounded-lg shadow-lg hover:shadow-xl transition-all duration-200  hover:scale-105 active:scale-95"
                       >
-                        <ShoppingCartIcon />
+                      Buy
                       </Link>
                     </div>
 
