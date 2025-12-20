@@ -218,3 +218,71 @@ export const getAllComments=async(req,res)=>{
     res.json({ ok: false, message: `from getAllComments:${error.message}` });
   }
 }
+export const toLike = async (req, res) => {
+  try {
+    const userId = req.userId;
+    const { commentId } = req.params; // get the comment ID from request
+
+    if (!userId) return res.json({ ok: false, message: "userId not found" });
+
+    const user = await userModel.findById(userId);
+    if (!user) return res.json({ ok: false, message: "user not found" });
+
+    const comment = await Comments.findById(commentId);
+    if (!comment) return res.json({ ok: false, message: "comment not found" });
+
+    if (comment.likedBy.includes(userId)) {
+      return res.json({ ok: false, message: "you have already liked this comment" });
+    }
+
+    // Remove dislike if it exists
+    if (comment.disLikedBy.includes(userId)) {
+      comment.disLikedBy = comment.disLikedBy.filter(id => id.toString() !== userId);
+      comment.totalDislikes = comment.disLikedBy.length;
+    }
+
+    comment.likedBy.push(userId);
+    comment.totalLikes = comment.likedBy.length;
+
+    await comment.save();
+
+    res.json({ ok: true, message: "comment liked successfully", comment });
+  } catch (error) {
+    res.json({ ok: false, message: `from toLike: ${error.message}` });
+  }
+};
+
+
+export const toDislike = async (req, res) => {
+  try {
+    const userId = req.userId;
+    const { commentId } = req.params;
+
+    if (!userId) return res.json({ ok: false, message: "userId not found" });
+
+    const user = await userModel.findById(userId);
+    if (!user) return res.json({ ok: false, message: "user not found" });
+
+    const comment = await Comments.findById(commentId);
+    if (!comment) return res.json({ ok: false, message: "comment not found" });
+
+    if (comment.disLikedBy.includes(userId)) {
+      return res.json({ ok: false, message: "you have already disliked this comment" });
+    }
+
+    // Remove like if it exists
+    if (comment.likedBy.includes(userId)) {
+      comment.likedBy = comment.likedBy.filter(id => id.toString() !== userId);
+      comment.totalLikes = comment.likedBy.length;
+    }
+
+    comment.disLikedBy.push(userId);
+    comment.totalDislikes = comment.disLikedBy.length;
+
+    await comment.save();
+
+    res.json({ ok: true, message: "comment disliked successfully", comment });
+  } catch (error) {
+    res.json({ ok: false, message: `from toDislike: ${error.message}` });
+  }
+};
