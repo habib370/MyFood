@@ -4,6 +4,7 @@ import { StoreContext } from "../context/StoreContext.jsx";
 import axios from "axios";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { FaEye, FaEyeSlash } from "react-icons/fa"; // Import from react-icons
 
 export const LoginPopup = ({ setShow }) => {
   const [data, setData] = React.useState({
@@ -14,8 +15,10 @@ export const LoginPopup = ({ setShow }) => {
   });
   const [isClose, setIsClose] = React.useState(false);
   const [isSignedIn, setIsSignedIn] = React.useState(false);
-  const { url, setToken,setUser } = useContext(StoreContext);
+  const [showPassword, setShowPassword] = React.useState(false); // New state for password visibility
+  const { url, setToken, setUser } = useContext(StoreContext);
   let newUrl = url;
+  
   const setAuth = async (e) => {
     e.preventDefault();
     const endpoint = isSignedIn ? "/api/user/login" : "/api/user/register";
@@ -131,19 +134,34 @@ export const LoginPopup = ({ setShow }) => {
             />
           </div>
 
+          {/* Password field with eye icon */}
           <div className="flex flex-col gap-2">
             <label className="text-sm font-medium text-gray-700">
               Password
             </label>
-            <input
-              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all duration-200"
-              type="password"
-              name="password"
-              value={data.password}
-              onChange={(e) => handleChange(e)}
-              required
-              placeholder="••••••••"
-            />
+            <div className="relative">
+              <input
+                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all duration-200 pr-12"
+                type={showPassword ? "text" : "password"}
+                name="password"
+                value={data.password}
+                onChange={(e) => handleChange(e)}
+                required
+                placeholder="••••••••"
+              />
+              <button
+                type="button"
+                className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-gray-700 focus:outline-none"
+                onClick={() => setShowPassword(!showPassword)}
+                aria-label={showPassword ? "Hide password" : "Show password"}
+              >
+                {showPassword ? (
+                  <FaEyeSlash className="h-5 w-5" />
+                ) : (
+                  <FaEye className="h-5 w-5" />
+                )}
+              </button>
+            </div>
           </div>
 
           <button
