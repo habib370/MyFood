@@ -14,7 +14,7 @@ const totalCount = Object.values(cartItems).reduce(
 (sum, qty) => sum + qty,
 0
 );
-const menuItems = ["home", "menu", "mobile-app", "contact us"];
+const menuItems = ["home", "help", "contact", "about us"];
 
 return ( <nav className="bg-white shadow-lg border-b border-gray-100 sticky top-0 z-50"> <div className="max-w-screen mx-auto px-4 sm:px-6 lg:px-8 flex justify-between h-16 items-center">
 
