@@ -27,6 +27,7 @@ export const Profile = () => {
            
         </div>
          <Link to='/edit-profile' className="underline hover:text-blue-500 cursor-pointer">Edit Profile</Link>
+         <p className="font-light text-sm">Total reports:0</p>
       </div>
     
     </div>
