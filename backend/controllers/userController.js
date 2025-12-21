@@ -1,6 +1,7 @@
 import userModel from "../models/userModel.js";
 import foodModel from '../models/foodModel.js'
 import Comments from '../models/commentModel.js'
+import CommentReply from '../models/commentReplyModel.js'
 import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
 import validator from "validator";
@@ -286,3 +287,47 @@ export const toDislike = async (req, res) => {
     res.json({ ok: false, message: `from toDislike: ${error.message}` });
   }
 };
+
+export const toReply=async(req,res)=>{
+  try {
+    const userId=req.userId;
+    if(!userId){
+      return res.json({ok:false,message:"userId not found"})
+    }
+    const {commentId}=req.params;
+    if(!commentId){
+      return res.json({ok:false,message:"commentId not found"})
+    }
+    const {replyText}=req.body;
+
+    if(!replyText){
+      return res.json({ok:false,message:"give a reply text"})
+    }
+
+    const user=await userModel.findById(userId);
+    if(!user){
+      return res.json({ok:false,message:"user not found"})
+    }
+
+    const newReply=new CommentReply({
+      commentId:commentId,
+      userId:userId,
+      firstName:user.firstName,
+      lastName:user.lastName,
+      replyText:replyText
+    })
+
+    await newReply.save();
+    res.json({ok:true,reply:newReply,user:user})
+  } catch (error) {
+     res.json({ ok: false, message: `from toReply: ${error.message}` });
+  }
+}
+export const getAllReplies=async(req,res)=>{
+  try {
+    const replies=await CommentReply.find({commentId:req.params.commentId})
+    res.json({ok:true,replies:replies})
+  } catch (error) {
+     res.json({ ok: false, message: `from getAllReplies: ${error.message}` });
+  }
+}
