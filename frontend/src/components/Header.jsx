@@ -5,7 +5,7 @@ export const Header = () => {
   return (
     <div
       className="relative w-full h-[70vh] min-h-[500px] max-h-[800px] bg-cover bg-center bg-fixed flex items-center justify-center overflow-hidden"
-      style={{ backgroundImage: `url(${assets.header_img})` }}
+      style={{ backgroundImage: `url(${assets.background})` }}
     >
       {/* Gradient Overlay */}
       <div className="absolute inset-0 bg-gradient-to-br from-black/60 via-black/40 to-black/70"></div>
