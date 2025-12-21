@@ -5,6 +5,7 @@ import axios from "axios";
 export const StoreContext = createContext(null);
 
 const StoreContextProvider = ({ children }) => {
+  const [showLogInPopUp, setShowLogInPopUp] = useState(false);
   const [cartItems, setCartItems] = useState({});
   const [token, setToken] = useState("");
   const [user, setUser] = useState(null);
@@ -147,6 +148,8 @@ const StoreContextProvider = ({ children }) => {
 
 
   const contextValue = {
+    showLogInPopUp,
+    setShowLogInPopUp,
     food_list,
     cartItems,
     setCartItems,

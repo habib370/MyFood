@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-
+import { TbCurrencyTaka } from "react-icons/tb";
 export const PlaceOrder = () => {
   const { food_list, cartItems, removeAllFromCart, url, token } =
     useContext(StoreContext);
@@ -225,9 +225,10 @@ export const PlaceOrder = () => {
                               </p>
                             </div>
                           </div>
-                          <p className="font-semibold text-gray-800">
-                            ${(cartItems[item._id] * item.price).toFixed(2)}
-                          </p>
+                          <div className="font-semibold text-gray-800 flex items-center">
+                            {(cartItems[item._id] * item.price).toFixed(2)}
+                            <TbCurrencyTaka className="text-xl"/>
+                          </div>
                         </div>
                       );
                     }
@@ -240,25 +241,28 @@ export const PlaceOrder = () => {
               <div className="space-y-4">
                 <div className="flex justify-between items-center">
                   <span className="text-gray-600">Subtotal:</span>
-                  <span className="font-medium text-gray-800">
-                    ${totalPrice.toFixed(2)}
-                  </span>
+                  <div className="font-medium text-gray-800 flex items-center">
+                    {totalPrice.toFixed(2)}
+                    <TbCurrencyTaka className="text-xl"/>
+                  </div>
                 </div>
 
                 <div className="flex justify-between items-center">
                   <span className="text-gray-600">Delivery Fee:</span>
-                  <span className="font-medium text-gray-800">
-                    ${deliveryFee.toFixed(2)}
-                  </span>
+                  <div className="font-medium text-gray-800 flex items-center">
+                    {deliveryFee.toFixed(2)}
+                    <TbCurrencyTaka className="text-xl"/>
+                  </div>
                 </div>
 
                 <hr className="border-gray-300" />
 
                 <div className="flex justify-between items-center text-lg font-bold">
                   <span className="text-gray-800">Grand Total:</span>
-                  <span className="text-orange-600 text-xl">
-                    ${grandTotal.toFixed(2)}
-                  </span>
+                  <div className="text-orange-600 text-xl flex items-center">
+                    {grandTotal.toFixed(2)}
+                    <TbCurrencyTaka className="text-2xl"/>
+                  </div>
                 </div>
               </div>
 

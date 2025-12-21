@@ -1,13 +1,15 @@
 import React, { useContext, useEffect } from "react";
-import { Link } from "react-router-dom";
+import { Link ,useNavigate} from "react-router-dom";
 import { StoreContext } from "../context/StoreContext.jsx";
 import { assets } from "../assets/assets.js";
 import { ToastContainer, toast } from "react-toastify";
+import { TbCurrencyTaka } from "react-icons/tb";
 import "react-toastify/dist/ReactToastify.css";
 import { FoodDisplaySkelton } from "./FoodDisplaySkelton.jsx";
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 
 export const FoodDisplay = ({ category }) => {
+  const navigate=useNavigate()
   const {
     food_list,
     cartItems,
@@ -16,6 +18,8 @@ export const FoodDisplay = ({ category }) => {
     isLoggedIn,
     url,
     fetchAllReview,
+    showLogInPopUp,
+    setShowLogInPopUp,
   } = useContext(StoreContext);
   const [reviewCount, setReviewCounts] = React.useState({});
   useEffect(() => {
@@ -38,6 +42,7 @@ export const FoodDisplay = ({ category }) => {
   const handleAddToCart = (foodItem) => {
     if (!isLoggedIn()) {
       toast.error("Please log in first");
+      setShowLogInPopUp(true);
     } else {
       addToCart(foodItem._id);
     }
@@ -84,7 +89,6 @@ export const FoodDisplay = ({ category }) => {
                       alt={foodItem.name}
                       className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
                     />
-                   
 
                     {/* Gradient Overlay */}
                     <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
@@ -98,13 +102,21 @@ export const FoodDisplay = ({ category }) => {
                       <h2 className="text-xl font-bold text-gray-900 group-hover:text-orange-600 transition-colors line-clamp-1">
                         {foodItem.name}
                       </h2>
-                      <Link
-                        to="/order"
-                        onClick={() => addToCart(foodItem._id)}
+                      <button
+                      
+                        onClick={() => {
+                          if (!isLoggedIn()) {
+                            toast.error("Please log in first");
+                            setShowLogInPopUp(true);
+                          } else {
+                            addToCart(foodItem._id);
+                            navigate("/order");
+                          }
+                        }}
                         className="z-20 px-3 py-2 bg-gradient-to-r from-yellow-500 to-orange-600  text-white  text-sm font-bold  rounded-lg shadow-lg hover:shadow-xl transition-all duration-200  hover:scale-105 active:scale-95"
                       >
-                      Buy
-                      </Link>
+                        Buy
+                      </button>
                     </div>
 
                     <p className="text-gray-600 text-sm mt-2 line-clamp-2 leading-relaxed">
@@ -115,9 +127,13 @@ export const FoodDisplay = ({ category }) => {
                   {/* Price and Rating */}
                   <div className="flex justify-between items-center">
                     <div className="flex flex-col">
-                      <h3 className="text-2xl font-bold bg-gradient-to-r from-orange-600 to-red-600 bg-clip-text text-transparent">
-                        ${foodItem.price}
+                     <div className="flex items-center">
+                       <h3 className="text-2xl font-bold bg-gradient-to-r from-orange-600 to-red-600 bg-clip-text text-transparent">
+                        {foodItem.price}
                       </h3>
+                      <TbCurrencyTaka className="text-orange-600 text-3xl font-bold"/>
+                     </div>
+                      
                     </div>
                     <div className="flex items-center gap-2">
                       <img

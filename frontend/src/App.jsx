@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState ,useContext} from "react";
 import "./App.css";
 import { Navbar } from "./components/Navbar.jsx";
 import { Route, Routes } from "react-router-dom";
@@ -15,19 +15,20 @@ import { MobileNavbar } from "./components/MobileNavbar.jsx";
 import { Profile } from "./pages/Profile.jsx";
 import {EditProfile} from './pages/EditProfile.jsx'
 import {SingleFoodItem} from './pages/SIngleFoodItem.jsx'
+import {StoreContext} from './context/StoreContext.jsx'
 function App() {
-  const [show, setShow] = useState(false);
-
+  
+  const { showLogInPopUp, setShowLogInPopUp } = useContext(StoreContext);
   return (
     <div className="flex flex-col min-h-screen">
-      {show && <LoginPopup setShow={setShow} />}
+      {showLogInPopUp && <LoginPopup />}
       <div className="hidden md:block">
-        <Navbar setShow={setShow} />
+        <Navbar  />
       </div>
 
       {/* Mobile Navbar */}
       <div className="md:hidden">
-        <MobileNavbar setShow={setShow} />
+        <MobileNavbar  />
       </div>
 
       <main className="flex-1 ">

@@ -72,10 +72,7 @@ export const Delivery = () => {
     }
   };
 
-  const handleEmojiOnClick=()=>{
-     toast.success("thanks for your believe")
-     navigate('/');
-  }
+
 
   return (
     <div className="min-h-screen bg-gray-50 py-4 px-3 sm:px-4">
@@ -85,8 +82,8 @@ export const Delivery = () => {
           <h1 className="text-2xl sm:text-3xl font-bold text-gray-800 mb-2">
             Your Orders
           </h1>
-          <p className="text-gray-600 text-sm sm:text-base">
-            Track your food orders
+          <p className="text-gray-600  text-2xl">
+            Check My Orders to view order history 
           </p>
           
         </div>

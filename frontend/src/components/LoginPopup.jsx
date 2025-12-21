@@ -6,7 +6,7 @@ import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { FaEye, FaEyeSlash } from "react-icons/fa"; // Import from react-icons
 
-export const LoginPopup = ({ setShow }) => {
+export const LoginPopup = () => {
   const [data, setData] = React.useState({
     firstName: "",
     lastName: "",
@@ -16,7 +16,7 @@ export const LoginPopup = ({ setShow }) => {
   const [isClose, setIsClose] = React.useState(false);
   const [isSignedIn, setIsSignedIn] = React.useState(false);
   const [showPassword, setShowPassword] = React.useState(false); // New state for password visibility
-  const { url, setToken, setUser } = useContext(StoreContext);
+  const { url, setToken, setUser, showLogInPopUp, setShowLogInPopUp } = useContext(StoreContext);
   let newUrl = url;
   
   const setAuth = async (e) => {
@@ -28,7 +28,7 @@ export const LoginPopup = ({ setShow }) => {
         setToken(response.data.token);
         localStorage.setItem("token", response.data.token);
         setIsClose(true);
-        setShow(false);
+        setShowLogInPopUp(false);
         toast.success(response.data.message)
       } else {
         toast.error(response.data.message)
@@ -57,7 +57,7 @@ export const LoginPopup = ({ setShow }) => {
         <button
           onClick={() => {
             setIsClose(true);
-            setShow(false);
+            setShowLogInPopUp(false);
           }}
           className="absolute top-4 right-4 w-8 h-8 bg-gray-100 hover:bg-gray-200 rounded-full flex items-center justify-center transition-colors duration-200 group"
         >

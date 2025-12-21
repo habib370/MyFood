@@ -1,19 +1,29 @@
 import { useEffect, useState, useContext } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { StoreContext } from "../context/StoreContext.jsx";
 import { toast } from "react-toastify";
 import ThumbUpOffAltIcon from "@mui/icons-material/ThumbUpOffAlt";
 import ThumbDownOffAltIcon from "@mui/icons-material/ThumbDownOffAlt";
+import { VscUnverified } from "react-icons/vsc";
+import { VscVerifiedFilled } from "react-icons/vsc";
 import StarIcon from "@mui/icons-material/Star";
 import { FaChevronDown, FaChevronUp } from "react-icons/fa";
 
 export const SingleFoodItem = () => {
+  const navigate = useNavigate();
   const token = localStorage.getItem("token");
   const user = JSON.parse(localStorage.getItem("user"));
   const { itemId } = useParams();
-  const { addToCart, deleteFromCart, cartItems, isLoggedIn, url } =
-    useContext(StoreContext);
+  const {
+    addToCart,
+    deleteFromCart,
+    cartItems,
+    isLoggedIn,
+    url,
+    showLogInPopUp,
+    setShowLogInPopUp,
+  } = useContext(StoreContext);
 
   const [item, setItem] = useState(null);
   const [comments, setComments] = useState([]);
@@ -51,7 +61,7 @@ export const SingleFoodItem = () => {
         const res = await axios.get(`${url}/api/comment/${itemId}`);
         const commentsData = res.data.comments || [];
         setComments(commentsData);
-        
+
         // Fetch reply counts for all comments
         const counts = {};
         for (const comment of commentsData) {
@@ -61,7 +71,10 @@ export const SingleFoodItem = () => {
             );
             counts[comment._id] = replyRes.data.replies?.length || 0;
           } catch (err) {
-            console.error("Failed to fetch reply count for comment:", comment._id);
+            console.error(
+              "Failed to fetch reply count for comment:",
+              comment._id
+            );
             counts[comment._id] = 0;
           }
         }
@@ -75,6 +88,11 @@ export const SingleFoodItem = () => {
   }, [itemId, url]);
 
   const handleAddComment = async () => {
+    if (!isLoggedIn()) {
+      toast.error("Please log in first");
+      setShowLogInPopUp(true);
+      return;
+    }
     if (!newComment.trim()) return;
     try {
       const res = await axios.post(
@@ -86,9 +104,9 @@ export const SingleFoodItem = () => {
         toast.success("Comment added!");
         setComments((prev) => [...prev, res.data.comment]);
         // Initialize reply count for new comment
-        setReplyCounts(prev => ({
+        setReplyCounts((prev) => ({
           ...prev,
-          [res.data.comment._id]: 0
+          [res.data.comment._id]: 0,
         }));
         setNewComment("");
       }
@@ -98,11 +116,12 @@ export const SingleFoodItem = () => {
     }
   };
 
-  const handleAddToCart = (foodItem) => {
+  const handleAddToCart = (foodItemId) => {
     if (!isLoggedIn()) {
       toast.error("Please log in first");
+      setShowLogInPopUp(true)
     } else {
-      addToCart(foodItem._id);
+      addToCart(foodItemId);
     }
   };
 
@@ -170,6 +189,11 @@ export const SingleFoodItem = () => {
   };
 
   const handleAddReply = async (commentId) => {
+    if (!isLoggedIn()) {
+      toast.error("Please log in first");
+      setShowLogInPopUp(true);
+      return;
+    }
     if (!replyText.trim()) return;
 
     try {
@@ -181,7 +205,7 @@ export const SingleFoodItem = () => {
 
       if (res.data.ok) {
         toast.success("Reply added!");
-        
+
         // Update replies list
         setReplies((prev) => ({
           ...prev,
@@ -189,9 +213,9 @@ export const SingleFoodItem = () => {
         }));
 
         // Update reply count
-        setReplyCounts(prev => ({
+        setReplyCounts((prev) => ({
           ...prev,
-          [commentId]: (prev[commentId] || 0) + 1
+          [commentId]: (prev[commentId] || 0) + 1,
         }));
 
         setReplyText("");
@@ -215,19 +239,7 @@ export const SingleFoodItem = () => {
     }
   };
 
-  const getAvatarColor = (char) => {
-    const firstChar = (char?.charAt(0) || "U").toUpperCase();
-    const colors = {
-      A: "#F87171", B: "#FBBF24", C: "#34D399", D: "#60A5FA",
-      E: "#A78BFA", F: "#F472B6", G: "#FCD34D", H: "#6EE7B7",
-      I: "#3B82F6", J: "#9333EA", K: "#EF4444", L: "#F59E0B",
-      M: "#10B981", N: "#3B82F6", O: "#8B5CF6", P: "#EC4899",
-      Q: "#FACC15", R: "#22C55E", S: "#2563EB", T: "#7C3AED",
-      U: "#DB2777", V: "#F59E0B", W: "#14B8A6", X: "#6366F1",
-      Y: "#D946EF", Z: "#F43F5E"
-    };
-    return colors[firstChar] || "#6B7280";
-  };
+
 
   if (loading)
     return (
@@ -304,9 +316,25 @@ export const SingleFoodItem = () => {
                 </span>
               )}
 
-              <h1 className="text-3xl md:text-4xl font-bold text-gray-900 mb-3">
-                {item.name}
-              </h1>
+              <div className="flex items-center justify-between">
+                <h1 className="text-3xl md:text-4xl font-bold text-gray-900 mb-3">
+                  {item.name}
+                </h1>
+                <button
+                  onClick={() => {
+                    if (!isLoggedIn()) {
+                      toast.error("Please log in first");
+                      setShowLogInPopUp(true);
+                    } else {
+                      addToCart(item._id);
+                      navigate("/order");
+                    }
+                  }}
+                  className="cursor-pointer z-20 px-5 py-2 bg-gradient-to-r from-yellow-500 to-orange-600  text-white  text-sm font-bold  rounded-lg shadow-lg hover:shadow-xl transition-all duration-200  hover:scale-105 active:scale-95"
+                >
+                  Buy
+                </button>
+              </div>
 
               <div className="flex items-center gap-3 mb-6">
                 <div className="flex items-center">
@@ -317,7 +345,8 @@ export const SingleFoodItem = () => {
                 </div>
                 <span className="text-gray-500">•</span>
                 <span className="text-gray-500">
-                  {comments.length} {comments.length === 1 ? "Review" : "Reviews"}
+                  {comments.length}{" "}
+                  {comments.length === 1 ? "Review" : "Reviews"}
                 </span>
               </div>
 
@@ -348,7 +377,7 @@ export const SingleFoodItem = () => {
                 <div className="flex items-center gap-4">
                   <div className="flex items-center border border-gray-300 rounded-xl overflow-hidden">
                     <button
-                      className="px-4 py-3 bg-gray-100 hover:bg-gray-200 text-gray-700 transition-colors"
+                      className="cursor-pointer  px-4 py-3 bg-gray-100 hover:bg-gray-200 text-gray-700 transition-colors"
                       onClick={() => deleteFromCart(item._id)}
                     >
                       −
@@ -357,8 +386,8 @@ export const SingleFoodItem = () => {
                       {cartQuantity}
                     </span>
                     <button
-                      className="px-4 py-3 bg-gray-100 hover:bg-gray-200 text-gray-700 transition-colors"
-                      onClick={() => addToCart(item._id)}
+                      className="cursor-pointer px-4 py-3 bg-gray-100 hover:bg-gray-200 text-gray-700 transition-colors"
+                      onClick={() => handleAddToCart(item._id)}
                     >
                       +
                     </button>
@@ -366,8 +395,8 @@ export const SingleFoodItem = () => {
 
                   <div className="flex-1">
                     <button
-                      onClick={() => addToCart(item._id)}
-                      className="w-full bg-gradient-to-r from-orange-500 to-orange-600 text-white px-6 py-4 rounded-xl font-semibold hover:from-orange-600 hover:to-orange-700 transition-all duration-300 transform hover:-translate-y-0.5 shadow-lg hover:shadow-xl"
+                      onClick={() => handleAddToCart(item._id)}
+                      className="cursor-pointer w-full bg-gradient-to-r from-orange-500 to-orange-600 text-white px-6 py-4 rounded-xl font-semibold hover:from-orange-600 hover:to-orange-700 transition-all duration-300 transform hover:-translate-y-0.5 shadow-lg hover:shadow-xl"
                     >
                       {cartQuantity > 0 ? (
                         <div className="flex items-center justify-center gap-3">
@@ -434,7 +463,7 @@ export const SingleFoodItem = () => {
               <div className="flex justify-end mt-3">
                 <button
                   onClick={handleAddComment}
-                  className="px-6 py-2 bg-orange-500 text-white font-semibold rounded-lg hover:bg-orange-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="cursor-pointer px-6 py-2 bg-orange-500 text-white font-semibold rounded-lg hover:bg-orange-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                   disabled={!newComment.trim()}
                 >
                   Post Review
@@ -464,29 +493,32 @@ export const SingleFoodItem = () => {
                       <div>
                         <div className="flex items-center gap-2 mb-2">
                           <div
-                            className="w-10 h-10 rounded-full flex items-center justify-center text-white font-bold"
-                            style={{ backgroundColor: getAvatarColor(c.firstName) }}
+                            className="w-10 h-10 rounded-full flex items-center justify-center text-white font-bold shadow-md"
+                            style={{
+                              backgroundColor: `hsl(${
+                                ((c.firstName?.charCodeAt(0) || 0) * 137.508) %
+                                360
+                              }, 70%, 50%)`,
+                            }}
                           >
                             {c.firstName?.charAt(0)?.toUpperCase() || "U"}
                           </div>
 
-                          <div className="flex gap-x-2 items-center">
+                          <div className="flex gap-x-1 items-center">
                             <p className="font-semibold text-gray-900">
                               {c.firstName || "Anonymous"} {c.lastName}
                             </p>
-                            <div className="flex items-center gap-1 text-sm text-gray-500">
-                              <StarIcon className="text-yellow-500" sx={{ fontSize: 16 }} />
-                              <span>{item.rating || 5.0}</span>
-                            </div>
+
+                            <VscVerifiedFilled className="text-green-500" />
                           </div>
                         </div>
                       </div>
                       <span className="text-sm text-gray-500">
-                        {new Date(c.createdAt).toLocaleDateString('en-US', {
-                                            month: 'short',
-                                            day: 'numeric',
-                                            year: 'numeric'
-                                          })}
+                        {new Date(c.createdAt).toLocaleDateString("en-US", {
+                          month: "short",
+                          day: "numeric",
+                          year: "numeric",
+                        })}
                       </span>
                     </div>
 
@@ -497,7 +529,7 @@ export const SingleFoodItem = () => {
                     <div className="flex items-center gap-4 pt-4 border-t border-gray-100">
                       <button
                         onClick={() => handleLike(c._id)}
-                        className={`flex items-center gap-2 transition-colors ${
+                        className={`cursor-pointer cursor-pointer flex items-center gap-2 transition-colors ${
                           hasLiked(c)
                             ? "text-orange-500"
                             : "text-gray-600 hover:text-orange-500"
@@ -508,7 +540,7 @@ export const SingleFoodItem = () => {
                       </button>
                       <button
                         onClick={() => handleDislike(c._id)}
-                        className={`flex items-center gap-2 transition-colors ${
+                        className={`cursor-pointer flex items-center gap-2 transition-colors ${
                           hasDisliked(c)
                             ? "text-orange-500"
                             : "text-gray-600 hover:text-orange-500"
@@ -519,7 +551,7 @@ export const SingleFoodItem = () => {
                       </button>
                       <button
                         onClick={() => toggleReplies(c._id)}
-                        className="text-sm text-gray-600 hover:text-orange-500 font-medium flex items-center gap-1"
+                        className="cursor-pointer text-sm text-gray-600 hover:text-orange-500 font-medium flex items-center gap-1"
                       >
                         {replies[c._id] ? (
                           <FaChevronUp className="text-xs" />
@@ -535,12 +567,18 @@ export const SingleFoodItem = () => {
                       {/* Reply Input */}
                       <div className="flex gap-3 ml-8 py-4">
                         <div className="flex-shrink-0 ">
-                          <div
-                            className="w-8 h-8 rounded-full flex items-center justify-center text-white text-xs font-bold"
-                            style={{ backgroundColor: getAvatarColor(user?.firstName) }}
+                           <div
+                            className="w-8 h-8 rounded-full flex items-center justify-center text-white font-bold shadow-md"
+                            style={{
+                              backgroundColor: `hsl(${
+                                ((user?.firstName?.charCodeAt(0) || 0) * 137.508) %
+                                360
+                              }, 70%, 50%)`,
+                            }}
                           >
-                            {user?.firstName?.charAt(0)?.toUpperCase() || "U"}
+                            {user?.firstName.charAt(0)?.toUpperCase() || "U"}
                           </div>
+                         
                         </div>
 
                         <div className="flex-1 space-y-2">
@@ -560,20 +598,20 @@ export const SingleFoodItem = () => {
                                     setReplyText("");
                                     setActiveReply(null);
                                   }}
-                                  className="text-sm text-gray-500 hover:text-gray-700 px-2 py-1"
+                                  className="cursor-pointer text-sm text-gray-500 hover:text-gray-700 px-2 py-1"
                                 >
                                   Cancel
                                 </button>
                                 <button
                                   onClick={() => handleAddReply(c._id)}
-                                  className="text-sm bg-orange-500 text-white px-3 py-1 rounded-full hover:bg-orange-600 transition-colors"
+                                  className="cursor-pointer text-sm bg-orange-500 text-white px-3 py-1 rounded-full hover:bg-orange-600 transition-colors"
                                 >
                                   Reply
                                 </button>
                               </div>
                             )}
                           </div>
-                          
+
                           {/* Replies List */}
                           {replies[c._id] && (
                             <div className="space-y-4 pt-4 ">
@@ -581,24 +619,32 @@ export const SingleFoodItem = () => {
                                 <div key={reply._id} className="flex gap-1">
                                   <div className="flex-shrink-0 py-4">
                                     <div
-                                      className="w-8 h-8 rounded-full flex items-center justify-center text-white text-xs font-bold"
-                                      style={{ backgroundColor: getAvatarColor(reply.firstName) }}
-                                    >
-                                      {reply.firstName?.charAt(0)?.toUpperCase() || "U"}
-                                    </div>
+                            className="w-8 h-8 rounded-full flex items-center justify-center text-white font-bold shadow-md"
+                            style={{
+                              backgroundColor: `hsl(${
+                                ((reply?.firstName?.charCodeAt(0) || 0) * 137.508) %
+                                360
+                              }, 70%, 50%)`,
+                            }}
+                          >
+                            {reply?.firstName.charAt(0)?.toUpperCase() || "U"}
+                          </div>
                                   </div>
 
                                   <div className="flex-1 py-2">
                                     <div className="bg-gray-50 rounded-2xl p-3">
                                       <div className="flex items-center gap-2 mb-1">
-                                        <span className="text-sm font-semibold text-gray-900">
+                                        <div className="flex items-center gap-x-1 text-sm font-semibold text-gray-900">
                                           {reply.firstName} {reply.lastName}
-                                        </span>
+                                            <VscVerifiedFilled className="text-green-500 text-sm " />
+                                        </div>
                                         <span className="text-xs text-gray-500">
-                                          {new Date(reply.createdAt).toLocaleDateString('en-US', {
-                                            month: 'short',
-                                            day: 'numeric',
-                                            year: 'numeric'
+                                          {new Date(
+                                            reply.createdAt
+                                          ).toLocaleDateString("en-US", {
+                                            month: "short",
+                                            day: "numeric",
+                                            year: "numeric",
                                           })}
                                         </span>
                                       </div>

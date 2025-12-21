@@ -9,10 +9,10 @@ import {Logo} from './Logo.jsx'
 import {UserProfile} from './UserProfile.jsx'
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 import {useNavigate}from 'react-router-dom'
-export const MobileNavbar = ({ setShow }) => {
+export const MobileNavbar = () => {
   const navigate=useNavigate();
   const [open, setOpen] = useState(false);
-  const { cartItems, isLoggedIn, user, setToken, setUser } =
+  const { cartItems, isLoggedIn, user, setToken, setUser, showLogInPopUp, setShowLogInPopUp } =
     useContext(StoreContext);
 
   const totalCount = Object.values(cartItems).reduce(
@@ -59,7 +59,7 @@ export const MobileNavbar = ({ setShow }) => {
         </Link>
        {!isLoggedIn()? ( <button
               onClick={() => {
-                setShow(true);
+                setShowLogInPopUp(true);
                 setOpen(false);
               }}
               className=" bg-gradient-to-r from-orange-500 to-red-500 text-white py-1 px-2 rounded-sm font-semibold mt-4"

@@ -1,10 +1,11 @@
 import React, { useContext, useState, useRef, useEffect } from "react";
 import { StoreContext } from "../context/StoreContext.jsx";
 import LogoutIcon from '@mui/icons-material/Logout';
-import {Link} from 'react-router-dom'  
+import {Link,useNavigate} from 'react-router-dom'  
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 export const UserProfile = () => {
+  const navigate=useNavigate()
   const { user, setToken, setUser } = useContext(StoreContext);
   const [isOpen, setIsOpen] = useState(false);
   const [isAnimating, setIsAnimating] = useState(false);
@@ -74,7 +75,7 @@ export const UserProfile = () => {
 
             <button className="w-full text-left px-4 py-2.5 text-sm text-gray-700 hover:bg-orange-50 hover:text-orange-600 transition-colors duration-200 flex items-center gap-3">
               <span className="text-base">🛒</span>
-              <span>My Cart</span>
+              <button onClick={()=>navigate('/delivery')}>Track Order</button>
             </button>
 
             <button className="w-full text-left px-4 py-2.5 text-sm text-gray-700 hover:bg-orange-50 hover:text-orange-600 transition-colors duration-200 flex items-center gap-3">

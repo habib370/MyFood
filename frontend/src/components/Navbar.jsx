@@ -6,9 +6,9 @@ import { StoreContext } from "../context/StoreContext.jsx";
 import { UserProfile } from "./UserProfile.jsx";
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 
-export const Navbar = ({ setShow }) => {
+export const Navbar = () => {
 const [menu, setMenu] = useState("home");
-const { cartItems, isLoggedIn } = useContext(StoreContext);
+const { cartItems, isLoggedIn , showLogInPopUp, setShowLogInPopUp} = useContext(StoreContext);
 
 const totalCount = Object.values(cartItems).reduce(
 (sum, qty) => sum + qty,
@@ -74,7 +74,7 @@ return ( <nav className="bg-white shadow-lg border-b border-gray-100 sticky top-
         <UserProfile />  
       ) : (  
         <button  
-          onClick={() => setShow(true)}  
+          onClick={() => setShowLogInPopUp(true)}  
           className="bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600 text-white font-semibold px-6 py-2 rounded-full transition-all duration-300 shadow-lg"  
         >  
           Register  
