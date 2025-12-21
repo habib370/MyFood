@@ -613,7 +613,10 @@ export const SingleFoodItem = () => {
                           </div>
 
                           {/* Replies List */}
-                          {replies[c._id] && (
+                       
+                        </div>
+                      </div>
+                         {replies[c._id] && (
                             <div className="space-y-4 pt-4 ">
                               {replies[c._id].map((reply) => (
                                 <div key={reply._id} className="flex gap-1">
@@ -657,8 +660,6 @@ export const SingleFoodItem = () => {
                               ))}
                             </div>
                           )}
-                        </div>
-                      </div>
                     </div>
                   </div>
                 ))}
