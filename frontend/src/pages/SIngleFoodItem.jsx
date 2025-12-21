@@ -9,7 +9,9 @@ import { VscUnverified } from "react-icons/vsc";
 import { VscVerifiedFilled } from "react-icons/vsc";
 import StarIcon from "@mui/icons-material/Star";
 import { FaChevronDown, FaChevronUp } from "react-icons/fa";
-
+import { FaCheckCircle } from "react-icons/fa";
+import { GiEmptyHourglass } from "react-icons/gi";
+import { FaTag } from "react-icons/fa";
 export const SingleFoodItem = () => {
   const navigate = useNavigate();
   const token = localStorage.getItem("token");
@@ -37,7 +39,11 @@ export const SingleFoodItem = () => {
   const [replyText, setReplyText] = useState("");
   const [replies, setReplies] = useState({});
   const [replyCounts, setReplyCounts] = useState({});
-
+  // Add this after the imports, before the component
+const calculateDiscountedPrice = (price, discount) => {
+  if (!discount || discount <= 0) return price;
+  return price - (price * discount) / 100;
+};
   // Fetch item data
   useEffect(() => {
     const fetchItem = async () => {
@@ -308,131 +314,207 @@ export const SingleFoodItem = () => {
           </div>
 
           {/* Right: Product Details */}
-          <div className="lg:w-1/2">
-            <div className="bg-white rounded-2xl shadow-xl p-6 md:p-8">
-              {item.category && (
-                <span className="inline-block px-3 py-1 text-xs font-semibold text-orange-600 bg-orange-50 rounded-full mb-4">
-                  {item.category}
-                </span>
-              )}
+        
+<div className="lg:w-1/2">
+  <div className="bg-white rounded-2xl shadow-xl p-6 md:p-8">
+    {/* Stock Status Badge */}
+    <div className="mb-4 flex justify-between items-center">
+      <div className={`inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm font-semibold ${item.isAvailable ? 'bg-green-100 text-green-800 border border-green-300' : 'bg-red-100 text-red-800 border border-red-300'}`}>
+        {item.isAvailable ? (
+          <>
+            <FaCheckCircle className="w-4 h-4" />
+            <span>In Stock</span>
+          </>
+        ) : (
+          <>
+            <GiEmptyHourglass className="w-4 h-4" />
+            <span>Out of Stock</span>
+          </>
+        )}
+      </div>
+      
+      {/* Discount Badge */}
+      {item.discount && item.discount > 0 && item.isAvailable && (
+        <div className="bg-gradient-to-r from-red-500 to-orange-500 text-white px-4 py-2 rounded-full text-sm font-bold shadow-lg flex items-center gap-2">
+          <FaTag className="w-3 h-3" />
+          <span>{item.discount}% OFF</span>
+        </div>
+      )}
+    </div>
 
-              <div className="flex items-center justify-between">
-                <h1 className="text-3xl md:text-4xl font-bold text-gray-900 mb-3">
-                  {item.name}
-                </h1>
-                <button
-                  onClick={() => {
-                    if (!isLoggedIn()) {
-                      toast.error("Please log in first");
-                      setShowLogInPopUp(true);
-                    } else {
-                      addToCart(item._id);
-                      navigate("/order");
-                    }
-                  }}
-                  className="cursor-pointer z-20 px-5 py-2 bg-gradient-to-r from-yellow-500 to-orange-600  text-white  text-sm font-bold  rounded-lg shadow-lg hover:shadow-xl transition-all duration-200  hover:scale-105 active:scale-95"
-                >
-                  Buy
-                </button>
-              </div>
+    {item.category && (
+      <span className="inline-block px-3 py-1 text-xs font-semibold text-orange-600 bg-orange-50 rounded-full mb-4">
+        {item.category}
+      </span>
+    )}
 
-              <div className="flex items-center gap-3 mb-6">
-                <div className="flex items-center">
-                  <StarIcon className="text-yellow-500 mr-1" />
-                  <span className="font-bold text-gray-900">
-                    {item.rating || 4.5}
-                  </span>
-                </div>
-                <span className="text-gray-500">•</span>
-                <span className="text-gray-500">
-                  {comments.length}{" "}
-                  {comments.length === 1 ? "Review" : "Reviews"}
-                </span>
-              </div>
+    <div className="flex items-center justify-between">
+      <h1 className={`text-3xl md:text-4xl font-bold mb-3 ${item.isAvailable ? 'text-gray-900' : 'text-gray-500'}`}>
+        {item.name}
+      </h1>
+      <button
+        onClick={() => {
+          if (!isLoggedIn()) {
+            toast.error("Please log in first");
+            setShowLogInPopUp(true);
+          } else if (!item.isAvailable) {
+            toast.error("This item is currently out of stock");
+          } else {
+            addToCart(item._id);
+            navigate("/order");
+          }
+        }}
+        className={`cursor-pointer z-20 px-5 py-2 text-sm font-bold rounded-lg shadow-lg transition-all duration-200 hover:scale-105 active:scale-95 ${item.isAvailable 
+          ? item.discount && item.discount > 0 
+            ? 'bg-gradient-to-r from-red-500 to-orange-500 text-white hover:shadow-xl' 
+            : 'bg-gradient-to-r from-yellow-500 to-orange-600 text-white hover:shadow-xl'
+          : 'bg-gray-300 text-gray-500 cursor-not-allowed'
+        }`}
+        disabled={!item.isAvailable}
+      >
+        {item.isAvailable ? (item.discount && item.discount > 0 ? "Quick Buy" : "Buy") : "Unavailable"}
+      </button>
+    </div>
 
-              <div className="mb-6">
-                <div className="text-4xl font-bold text-green-600 mb-2">
-                  ${item.price}
-                </div>
-                {item.originalPrice && (
-                  <div className="text-lg text-gray-500 line-through">
-                    ${item.originalPrice}
-                  </div>
-                )}
-              </div>
+    <div className="flex items-center gap-3 mb-6">
+      <div className="flex items-center">
+        <StarIcon className={`mr-1 ${item.isAvailable ? 'text-yellow-500' : 'text-gray-400'}`} />
+        <span className={`font-bold ${item.isAvailable ? 'text-gray-900' : 'text-gray-500'}`}>
+          {item.rating || 4.5}
+        </span>
+      </div>
+      <span className="text-gray-500">•</span>
+      <span className={`${item.isAvailable ? 'text-gray-500' : 'text-gray-400'}`}>
+        {comments.length} {comments.length === 1 ? "Review" : "Reviews"}
+      </span>
+    </div>
 
-              <div className="mb-8">
-                <h3 className="text-xl font-semibold text-gray-900 mb-3">
-                  Description
-                </h3>
-                <p className="text-gray-700 leading-relaxed">
-                  {item.description}
-                </p>
-              </div>
-
-              <div className="mb-8">
-                <h3 className="text-lg font-semibold text-gray-900 mb-4">
-                  Quantity
-                </h3>
-                <div className="flex items-center gap-4">
-                  <div className="flex items-center border border-gray-300 rounded-xl overflow-hidden">
-                    <button
-                      className="cursor-pointer  px-4 py-3 bg-gray-100 hover:bg-gray-200 text-gray-700 transition-colors"
-                      onClick={() => deleteFromCart(item._id)}
-                    >
-                      −
-                    </button>
-                    <span className="px-6 py-3 text-lg font-semibold min-w-[60px] text-center">
-                      {cartQuantity}
-                    </span>
-                    <button
-                      className="cursor-pointer px-4 py-3 bg-gray-100 hover:bg-gray-200 text-gray-700 transition-colors"
-                      onClick={() => handleAddToCart(item._id)}
-                    >
-                      +
-                    </button>
-                  </div>
-
-                  <div className="flex-1">
-                    <button
-                      onClick={() => handleAddToCart(item._id)}
-                      className="cursor-pointer w-full bg-gradient-to-r from-orange-500 to-orange-600 text-white px-6 py-4 rounded-xl font-semibold hover:from-orange-600 hover:to-orange-700 transition-all duration-300 transform hover:-translate-y-0.5 shadow-lg hover:shadow-xl"
-                    >
-                      {cartQuantity > 0 ? (
-                        <div className="flex items-center justify-center gap-3">
-                          <span>Add to Cart</span>
-                          <span className="bg-white text-orange-600 px-2 py-1 rounded-full text-sm">
-                            {cartQuantity} in cart
-                          </span>
-                        </div>
-                      ) : (
-                        "Add to Cart"
-                      )}
-                    </button>
-                  </div>
-                </div>
-              </div>
-
-              <div className="grid grid-cols-2 gap-4 pt-6 border-t border-gray-200">
-                {item.calories && (
-                  <div className="text-center">
-                    <div className="text-gray-500 text-sm">Calories</div>
-                    <div className="font-semibold text-gray-900">
-                      {item.calories}
-                    </div>
-                  </div>
-                )}
-                {item.prepTime && (
-                  <div className="text-center">
-                    <div className="text-gray-500 text-sm">Prep Time</div>
-                    <div className="font-semibold text-gray-900">
-                      {item.prepTime} min
-                    </div>
-                  </div>
-                )}
-              </div>
-            </div>
+    <div className="mb-6">
+      {/* Price Display */}
+      <div className="flex items-center gap-3 mb-2">
+        {/* Current/Discounted Price */}
+        <div className={`text-4xl font-bold ${item.isAvailable ? 'text-green-600' : 'text-gray-400'}`}>
+          ${calculateDiscountedPrice(item.price, item.discount).toFixed(2)}
+        </div>
+        
+        {/* Original Price with strikethrough if discount exists */}
+        {item.discount && item.discount > 0 && item.isAvailable && (
+          <div className={`text-lg line-through ${item.isAvailable ? 'text-gray-500' : 'text-gray-400'}`}>
+            ${item.price}
           </div>
+        )}
+      </div>
+      
+      {/* You Save Amount */}
+      {item.discount && item.discount > 0 && item.isAvailable && (
+        <div className="text-sm text-green-600 font-semibold">
+          You save ${((item.price * item.discount) / 100).toFixed(2)} ({item.discount}% off)
+        </div>
+      )}
+    </div>
+
+    <div className="mb-8">
+      <h3 className={`text-xl font-semibold mb-3 ${item.isAvailable ? 'text-gray-900' : 'text-gray-600'}`}>
+        Description
+      </h3>
+      <p className={`leading-relaxed ${item.isAvailable ? 'text-gray-700' : 'text-gray-500'}`}>
+        {item.description}
+      </p>
+    </div>
+
+    <div className="mb-8">
+      <h3 className={`text-lg font-semibold mb-4 ${item.isAvailable ? 'text-gray-900' : 'text-gray-600'}`}>
+        Quantity
+      </h3>
+      <div className="flex items-center gap-4">
+        <div className={`flex items-center border rounded-xl overflow-hidden ${item.isAvailable ? 'border-gray-300' : 'border-gray-200 opacity-60'}`}>
+          <button
+            className={`cursor-pointer px-4 py-3 transition-colors ${item.isAvailable 
+              ? 'bg-gray-100 hover:bg-gray-200 text-gray-700' 
+              : 'bg-gray-100 text-gray-400 cursor-not-allowed'
+            }`}
+            onClick={() => item.isAvailable && deleteFromCart(item._id)}
+            disabled={!item.isAvailable}
+          >
+            −
+          </button>
+          <span className={`px-6 py-3 text-lg font-semibold min-w-[60px] text-center ${item.isAvailable ? 'text-gray-900' : 'text-gray-500'}`}>
+            {cartQuantity}
+          </span>
+          <button
+            className={`cursor-pointer px-4 py-3 transition-colors ${item.isAvailable 
+              ? item.discount && item.discount > 0
+                ? 'bg-gradient-to-r from-red-100 to-orange-100 hover:from-red-200 hover:to-orange-200 text-gray-700'
+                : 'bg-gray-100 hover:bg-gray-200 text-gray-700'
+              : 'bg-gray-100 text-gray-400 cursor-not-allowed'
+            }`}
+            onClick={() => item.isAvailable && handleAddToCart(item._id)}
+            disabled={!item.isAvailable}
+          >
+            +
+          </button>
+        </div>
+
+        <div className="flex-1">
+          <button
+            onClick={() => {
+              if (!isLoggedIn()) {
+                toast.error("Please log in first");
+                setShowLogInPopUp(true);
+              } else if (!item.isAvailable) {
+                toast.error("This item is currently out of stock");
+              } else {
+                handleAddToCart(item._id);
+              }
+            }}
+            className={`cursor-pointer w-full px-6 py-4 rounded-xl font-semibold transition-all duration-300 transform hover:-translate-y-0.5 shadow-lg ${item.isAvailable 
+              ? item.discount && item.discount > 0
+                ? 'bg-gradient-to-r from-red-500 to-orange-500 text-white hover:from-red-600 hover:to-orange-600 hover:shadow-xl'
+                : 'bg-gradient-to-r from-orange-500 to-orange-600 text-white hover:from-orange-600 hover:to-orange-700 hover:shadow-xl'
+              : 'bg-gray-300 text-gray-500 cursor-not-allowed'
+            }`}
+            disabled={!item.isAvailable}
+          >
+            {cartQuantity > 0 ? (
+              <div className="flex items-center justify-center gap-3">
+                <span>{item.isAvailable ? (item.discount && item.discount > 0 ? "Add More" : "Add to Cart") : "Out of Stock"}</span>
+                <span className={`px-2 py-1 rounded-full text-sm ${item.isAvailable 
+                  ? item.discount && item.discount > 0
+                    ? 'bg-white text-red-600'
+                    : 'bg-white text-orange-600'
+                  : 'bg-gray-200 text-gray-500'
+                }`}>
+                  {cartQuantity} in cart
+                </span>
+              </div>
+            ) : (
+              item.isAvailable ? (item.discount && item.discount > 0 ? "Quick to Cart" : "Add to Cart") : "Out of Stock"
+            )}
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div className={`grid grid-cols-2 gap-4 pt-6 border-t ${item.isAvailable ? 'border-gray-200' : 'border-gray-100'}`}>
+      {item.calories && (
+        <div className="text-center">
+          <div className={`text-sm ${item.isAvailable ? 'text-gray-500' : 'text-gray-400'}`}>Calories</div>
+          <div className={`font-semibold ${item.isAvailable ? 'text-gray-900' : 'text-gray-500'}`}>
+            {item.calories}
+          </div>
+        </div>
+      )}
+      {item.prepTime && (
+        <div className="text-center">
+          <div className={`text-sm ${item.isAvailable ? 'text-gray-500' : 'text-gray-400'}`}>Prep Time</div>
+          <div className={`font-semibold ${item.isAvailable ? 'text-gray-900' : 'text-gray-500'}`}>
+            {item.prepTime} min
+          </div>
+        </div>
+      )}
+    </div>
+  </div>
+</div>
         </div>
 
         {/* Reviews Section */}

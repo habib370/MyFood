@@ -1,5 +1,5 @@
 import React, { useContext, useEffect } from "react";
-import { Link ,useNavigate} from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { StoreContext } from "../context/StoreContext.jsx";
 import { assets } from "../assets/assets.js";
 import { ToastContainer, toast } from "react-toastify";
@@ -7,9 +7,11 @@ import { TbCurrencyTaka } from "react-icons/tb";
 import "react-toastify/dist/ReactToastify.css";
 import { FoodDisplaySkelton } from "./FoodDisplaySkelton.jsx";
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
+import { GiEmptyHourglass } from "react-icons/gi";
+import { FaCheckCircle, FaTag } from "react-icons/fa";
 
 export const FoodDisplay = ({ category }) => {
-  const navigate=useNavigate()
+  const navigate = useNavigate();
   const {
     food_list,
     cartItems,
@@ -22,6 +24,7 @@ export const FoodDisplay = ({ category }) => {
     setShowLogInPopUp,
   } = useContext(StoreContext);
   const [reviewCount, setReviewCounts] = React.useState({});
+
   useEffect(() => {
     const loadAllReviewCounts = async () => {
       const counts = {};
@@ -47,9 +50,17 @@ export const FoodDisplay = ({ category }) => {
       addToCart(foodItem._id);
     }
   };
+
+  // Calculate discounted price
+  const calculateDiscountedPrice = (price, discount) => {
+    if (!discount || discount <= 0) return price;
+    return price - (price * discount) / 100;
+  };
+
   if (!food_list || !food_list.length) {
     return <FoodDisplaySkelton />;
   }
+
   return (
     <div className="max-w-screen mx-auto px-4 sm:px-6 lg:px-8 py-8">
       {/* Header */}
@@ -57,7 +68,7 @@ export const FoodDisplay = ({ category }) => {
         <h2 className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-orange-600 to-red-600 bg-clip-text text-transparent mb-4">
           Today's Specials
         </h2>
-        <p className="text-gray-600 text-lg text-center pb-5 ">
+        <p className="text-gray-600 text-lg text-center pb-5">
           Freshly prepared with love and served with passion
         </p>
       </div>
@@ -70,28 +81,95 @@ export const FoodDisplay = ({ category }) => {
           )
           .map((foodItem) => {
             const quantity = cartItems[foodItem._id] || 0;
+            const isAvailable = foodItem.isAvailable !== false;
+          const hasDiscount = Number(foodItem.discount) > 0;
+
+            const originalPrice = parseFloat(foodItem.price);
+            const discountPercentage = foodItem.discount || 0;
+            const discountedPrice = hasDiscount 
+              ? calculateDiscountedPrice(originalPrice, discountPercentage)
+              : originalPrice;
 
             return (
               <div
                 key={foodItem._id}
-                className="
+                className={`
                   group bg-white rounded-2xl p-6 shadow-lg hover:shadow-2xl 
                   border border-gray-100 transition-all duration-500 
                   transform hover:-translate-y-2 relative overflow-hidden
-                  animate-fadeIn
-                "
+                  animate-fadeIn relative
+                  ${!isAvailable ? "opacity-80" : ""}
+                `}
               >
-                {/* Image Container */}
+                {/* Discount Badge - Top Left Corner */}
+                {hasDiscount && isAvailable && (
+                  <div className="absolute top-4 left-4 z-20">
+                    <div className="bg-gradient-to-r from-red-500 to-orange-500 text-white px-3 py-1.5 rounded-full text-xs font-bold shadow-lg flex items-center gap-1">
+                      <FaTag className="w-3 h-3" />
+                      <span>{discountPercentage}% OFF</span>
+                    </div>
+                  </div>
+                )}
+
+                {/* Stock Status Badge - Top Right Corner */}
+                <div
+                  className={`
+                    absolute top-4 right-4 z-20 px-3 py-1.5 rounded-full 
+                    text-xs font-bold shadow-lg backdrop-blur-sm
+                    ${isAvailable
+                      ? "bg-green-100 text-green-800 border border-green-300"
+                      : "bg-red-100 text-red-800 border border-red-300"
+                    }
+                  `}
+                >
+                  <div className="flex items-center gap-1">
+                    {isAvailable ? (
+                      <>
+                        <FaCheckCircle className="w-3 h-3" />
+                        <span>In Stock</span>
+                      </>
+                    ) : (
+                      <>
+                        <GiEmptyHourglass className="w-3 h-3" />
+                        <span>Out of Stock</span>
+                      </>
+                    )}
+                  </div>
+                </div>
+
+                {/* Image Container with Overlay for Out of Stock */}
                 <div className="relative w-full h-48 mb-4 rounded-xl overflow-hidden">
                   <Link to={`/item/${foodItem._id}`}>
                     <img
                       src={foodItem.imageUrl}
                       alt={foodItem.name}
-                      className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                      className={`
+                        w-full h-full object-cover transition-transform duration-700 
+                        ${isAvailable ? "group-hover:scale-110" : "grayscale"}
+                      `}
                     />
 
                     {/* Gradient Overlay */}
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                    <div
+                      className={`absolute inset-0 bg-gradient-to-t from-black/20 to-transparent 
+                        ${isAvailable
+                          ? "opacity-0 group-hover:opacity-100"
+                          : "opacity-50"
+                        } 
+                        transition-opacity duration-300`}
+                    />
+
+                    {/* Out of Stock Overlay */}
+                    {!isAvailable && (
+                      <div className="absolute inset-0 bg-black/40 flex items-center justify-center">
+                        <div className="text-center p-4">
+                          <GiEmptyHourglass className="w-10 h-10 text-white mx-auto mb-2" />
+                          <span className="text-white font-bold text-lg">
+                            Out of Stock
+                          </span>
+                        </div>
+                      </div>
+                    )}
                   </Link>
                 </div>
 
@@ -99,27 +177,52 @@ export const FoodDisplay = ({ category }) => {
                 <div className="space-y-3">
                   <div>
                     <div className="flex justify-between items-center">
-                      <h2 className="text-xl font-bold text-gray-900 group-hover:text-orange-600 transition-colors line-clamp-1">
+                      <h2
+                        className={`
+                          text-xl font-bold line-clamp-1
+                          ${isAvailable
+                            ? "text-gray-900 group-hover:text-orange-600"
+                            : "text-gray-500"
+                          }
+                          transition-colors
+                        `}
+                      >
                         {foodItem.name}
                       </h2>
                       <button
-                      
                         onClick={() => {
                           if (!isLoggedIn()) {
                             toast.error("Please log in first");
                             setShowLogInPopUp(true);
-                          } else {
+                          } else if (isAvailable) {
                             addToCart(foodItem._id);
                             navigate("/order");
+                          } else {
+                            toast.error("This item is out of stock");
                           }
                         }}
-                        className="z-20 px-3 py-2 bg-gradient-to-r from-yellow-500 to-orange-600  text-white  text-sm font-bold  rounded-lg shadow-lg hover:shadow-xl transition-all duration-200  hover:scale-105 active:scale-95"
+                        className={`
+                          z-20 px-3 py-2 text-sm font-bold rounded-lg shadow-lg 
+                          transition-all duration-200 hover:scale-105 active:scale-95
+                          ${isAvailable
+                            ? hasDiscount
+                              ? "bg-gradient-to-r from-red-500 to-orange-500 text-white hover:shadow-xl"
+                              : "bg-gradient-to-r from-yellow-500 to-orange-600 text-white hover:shadow-xl"
+                            : "bg-gray-300 text-gray-500 cursor-not-allowed"
+                          }
+                        `}
+                        disabled={!isAvailable}
                       >
-                        Buy
+                        {isAvailable ? "Buy" : "Unavailable"}
                       </button>
                     </div>
 
-                    <p className="text-gray-600 text-sm mt-2 line-clamp-2 leading-relaxed">
+                    <p
+                      className={`
+                        text-sm mt-2 line-clamp-2 leading-relaxed
+                        ${isAvailable ? "text-gray-600" : "text-gray-400"}
+                      `}
+                    >
                       {foodItem.description}
                     </p>
                   </div>
@@ -127,24 +230,72 @@ export const FoodDisplay = ({ category }) => {
                   {/* Price and Rating */}
                   <div className="flex justify-between items-center">
                     <div className="flex flex-col">
-                     <div className="flex items-center">
-                       <h3 className="text-2xl font-bold bg-gradient-to-r from-orange-600 to-red-600 bg-clip-text text-transparent">
-                        {foodItem.price}
-                      </h3>
-                      <TbCurrencyTaka className="text-orange-600 text-3xl font-bold"/>
-                     </div>
+                      <div className="flex items-center gap-2">
+                        {/* Discounted Price */}
+                        <div className="flex items-center">
+                          <h3
+                            className={`
+                              text-2xl font-bold bg-clip-text text-transparent
+                              ${isAvailable
+                                ? hasDiscount
+                                  ? "bg-gradient-to-r from-red-600 to-orange-600"
+                                  : "bg-gradient-to-r from-orange-600 to-red-600"
+                                : "bg-gradient-to-r from-gray-400 to-gray-500"
+                              }
+                            `}
+                          >
+                            {discountedPrice.toFixed(2)}
+                          </h3>
+                          <TbCurrencyTaka
+                            className={`
+                              text-3xl font-bold
+                              ${isAvailable 
+                                ? hasDiscount ? "text-red-600" : "text-orange-600"
+                                : "text-gray-400"
+                              }
+                            `}
+                          />
+                        </div>
+                        
+                        {/* Original Price with strikethrough if discount exists */}
+                        {hasDiscount && isAvailable && (
+                          <div className="flex items-center">
+                            <span className="text-lg text-gray-500 line-through mr-1">
+                              {originalPrice.toFixed(2)}
+                            </span>
+                            <TbCurrencyTaka className="text-lg text-gray-500 line-through" />
+                          </div>
+                        )}
+                      </div>
                       
+                      {/* You Save Amount */}
+                      {hasDiscount && isAvailable && (
+                        <div className="text-xs text-green-600 font-semibold mt-1">
+                          Save {((originalPrice * discountPercentage) / 100).toFixed(2)}৳
+                        </div>
+                      )}
                     </div>
+                    
                     <div className="flex items-center gap-2">
                       <img
                         src={assets.rating_starts}
                         alt="rating"
-                        className="w-20 opacity-90"
+                        className={`w-20 opacity-90 ${!isAvailable ? "grayscale opacity-50" : ""}`}
                       />
-                      <span className="text-xs text-gray-500 font-medium">
+                      <span
+                        className={`
+                          text-xs font-medium
+                          ${isAvailable ? "text-gray-500" : "text-gray-400"}
+                        `}
+                      >
                         ({reviewCount[foodItem._id]})
                       </span>
-                      <span className="text-xs text-gray-500 font-medium">
+                      <span
+                        className={`
+                          text-xs font-medium
+                          ${isAvailable ? "text-gray-500" : "text-gray-400"}
+                        `}
+                      >
                         reviews
                       </span>
                     </div>
@@ -152,19 +303,32 @@ export const FoodDisplay = ({ category }) => {
 
                   {/* Add to Cart Section */}
                   <div className="mt-4">
-                    {quantity === 0 ? (
+                    {!isAvailable ? (
+                      <div
+                        className="
+                          w-full bg-gradient-to-r from-gray-300 to-gray-400 
+                          text-gray-600 font-semibold py-3 px-6 rounded-xl
+                          flex items-center justify-center gap-2
+                          cursor-not-allowed
+                        "
+                      >
+                        <GiEmptyHourglass className="w-5 h-5" />
+                        Currently Unavailable
+                      </div>
+                    ) : quantity === 0 ? (
                       <button
                         onClick={() => {
                           handleAddToCart(foodItem);
                         }}
-                        className="
-                          w-full bg-gradient-to-r from-green-500 to-emerald-600 
-                          text-white font-semibold py-3 px-6 rounded-xl
-                          hover:from-green-600 hover:to-emerald-700 
+                        className={`
+                          w-full font-semibold py-3 px-6 rounded-xl
                           transition-all duration-300 transform hover:scale-105
-                          shadow-lg hover:shadow-green-500/25
-                          flex items-center justify-center gap-2
-                        "
+                          shadow-lg flex items-center justify-center gap-2
+                          ${hasDiscount
+                            ? "bg-gradient-to-r from-red-500 to-orange-500 text-white hover:shadow-red-500/25 hover:from-red-600 hover:to-orange-600"
+                            : "bg-gradient-to-r from-green-500 to-emerald-600 text-white hover:shadow-green-500/25 hover:from-green-600 hover:to-emerald-700"
+                          }
+                        `}
                       >
                         <svg
                           className="w-5 h-5"
@@ -179,7 +343,7 @@ export const FoodDisplay = ({ category }) => {
                             d="M12 6v6m0 0v6m0-6h6m-6 0H6"
                           />
                         </svg>
-                        Add to Cart
+                        {hasDiscount ? "Quick to Cart" : "Add to Cart"}
                       </button>
                     ) : (
                       <div className="flex items-center justify-between bg-gradient-to-r from-gray-50 to-gray-100 rounded-xl p-3 border border-gray-200">
@@ -204,12 +368,16 @@ export const FoodDisplay = ({ category }) => {
 
                         <button
                           onClick={() => addToCart(foodItem._id)}
-                          className="
-                            w-10 h-10 bg-green-500 text-white rounded-lg 
-                            hover:bg-green-600 transition-all duration-200
+                          className={`
+                            w-10 h-10 rounded-lg text-white
+                            transition-all duration-200
                             flex items-center justify-center font-bold text-lg
                             transform hover:scale-110 shadow-md
-                          "
+                            ${hasDiscount
+                              ? "bg-gradient-to-r from-red-500 to-orange-500 hover:from-red-600 hover:to-orange-600"
+                              : "bg-green-500 hover:bg-green-600"
+                            }
+                          `}
                         >
                           +
                         </button>
@@ -218,29 +386,75 @@ export const FoodDisplay = ({ category }) => {
                   </div>
                 </div>
 
-                {/* Glow Effect */}
-                <div className="absolute inset-0 rounded-2xl bg-gradient-to-r from-orange-500/10 to-red-500/10 opacity-0 group-hover:opacity-100 transition-opacity duration-500 -z-10" />
+                {/* Glow Effect - Only for available items */}
+                {isAvailable && (
+                  <div className={`absolute inset-0 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 -z-10 ${
+                    hasDiscount
+                      ? "bg-gradient-to-r from-red-500/10 to-orange-500/10"
+                      : "bg-gradient-to-r from-orange-500/10 to-red-500/10"
+                  }`} />
+                )}
               </div>
             );
           })}
       </div>
 
-      {/* Custom Animations */}
-      <style jsx>{`
-        @keyframes fadeIn {
-          from {
-            opacity: 0;
-            transform: translateY(20px) scale(0.95);
-          }
-          to {
-            opacity: 1;
-            transform: translateY(0) scale(1);
-          }
-        }
-        .animate-fadeIn {
-          animation: fadeIn 0.6s ease-out forwards;
-        }
-      `}</style>
+      {/* Discount Summary */}
+      <div className="mt-8 p-6 bg-gradient-to-r from-red-50 to-orange-50 rounded-2xl border border-red-100">
+        <div className="flex flex-col md:flex-row justify-between items-center gap-4">
+          <div className="flex items-center gap-4">
+            <div className="flex items-center gap-2">
+              <FaTag className="text-red-500" />
+              <span className="text-red-700 font-medium">Special Discounts</span>
+            </div>
+            <div className="text-sm text-red-600">
+              {food_list.filter(item => item.discount && item.discount > 0).length} items on sale
+            </div>
+          </div>
+          <div className="text-gray-600">
+            <span className="font-bold text-red-600">
+              Up to {Math.max(...food_list.map(item => item.discount || 0))}% OFF
+            </span>{" "}
+            on selected items
+          </div>
+        </div>
+      </div>
+
+      {/* Stock Summary */}
+      <div className="mt-8 p-6 bg-gradient-to-r from-gray-50 to-gray-100 rounded-2xl border border-gray-200">
+        <div className="flex flex-col md:flex-row justify-between items-center gap-4">
+          <div className="flex items-center gap-4">
+            <div className="flex items-center gap-2">
+              <div className="w-4 h-4 bg-green-500 rounded-full"></div>
+              <span className="text-gray-700 font-medium">In Stock</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <div className="w-4 h-4 bg-red-500 rounded-full"></div>
+              <span className="text-gray-700 font-medium">Out of Stock</span>
+            </div>
+          </div>
+          <div className="text-gray-600">
+            Showing{" "}
+            <span className="font-bold text-orange-600">
+              {food_list.filter(item => item.isAvailable !== false).length}
+            </span>{" "}
+            available items out of {food_list.length}
+          </div>
+        </div>
+      </div>
+
+      {/* Toast Container */}
+      <ToastContainer
+        position="top-right"
+        autoClose={3000}
+        hideProgressBar={false}
+        newestOnTop
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+      />
     </div>
   );
 };
