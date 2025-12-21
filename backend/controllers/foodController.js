@@ -100,3 +100,26 @@ export const getSingleItem=async(req,res)=>{
     res.json({ ok: false, message: `from getSingleItem:${error.message}` });
   }
 }
+
+export const searchItems= async (req, res) => {
+  try {
+    const { q } = req.query;
+
+    if (!q) {
+      return res.json([]);
+    }
+
+    const foods = await foodModel.find({
+      $or: [
+        { name: { $regex: q, $options: "i" } },
+        { category: { $regex: q, $options: "i" } },
+        { description: { $regex: q, $options: "i" } },
+      ],
+    }).limit(10); // limit for performance
+
+    res.json(foods);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
