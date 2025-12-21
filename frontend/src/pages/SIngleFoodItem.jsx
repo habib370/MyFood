@@ -6,12 +6,13 @@ import { toast } from "react-toastify";
 import ThumbUpOffAltIcon from "@mui/icons-material/ThumbUpOffAlt";
 import ThumbDownOffAltIcon from "@mui/icons-material/ThumbDownOffAlt";
 import StarIcon from "@mui/icons-material/Star";
+import { FaChevronDown, FaChevronUp } from "react-icons/fa";
 
 export const SingleFoodItem = () => {
   const token = localStorage.getItem("token");
-const user=JSON.parse(localStorage.getItem("user"))
+  const user = JSON.parse(localStorage.getItem("user"));
   const { itemId } = useParams();
-  const { addToCart, deleteFromCart, cartItems, isLoggedIn, url, } =
+  const { addToCart, deleteFromCart, cartItems, isLoggedIn, url } =
     useContext(StoreContext);
 
   const [item, setItem] = useState(null);
@@ -19,10 +20,13 @@ const user=JSON.parse(localStorage.getItem("user"))
   const [newComment, setNewComment] = useState("");
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
-  const [quantity, setQuantity] = useState(1);
   const [selectedImage, setSelectedImage] = useState(0);
 
   const cartQuantity = cartItems[itemId] || 0;
+  const [activeReply, setActiveReply] = useState(null);
+  const [replyText, setReplyText] = useState("");
+  const [replies, setReplies] = useState({});
+  const [replyCounts, setReplyCounts] = useState({});
 
   // Fetch item data
   useEffect(() => {
@@ -40,12 +44,28 @@ const user=JSON.parse(localStorage.getItem("user"))
     fetchItem();
   }, [itemId, url]);
 
-  // Fetch comments
+  // Fetch comments and their reply counts
   useEffect(() => {
     const fetchComments = async () => {
       try {
         const res = await axios.get(`${url}/api/comment/${itemId}`);
-        setComments(res.data.comments || []);
+        const commentsData = res.data.comments || [];
+        setComments(commentsData);
+        
+        // Fetch reply counts for all comments
+        const counts = {};
+        for (const comment of commentsData) {
+          try {
+            const replyRes = await axios.get(
+              `${url}/api/comment/all-replies/${comment._id}`
+            );
+            counts[comment._id] = replyRes.data.replies?.length || 0;
+          } catch (err) {
+            console.error("Failed to fetch reply count for comment:", comment._id);
+            counts[comment._id] = 0;
+          }
+        }
+        setReplyCounts(counts);
       } catch (err) {
         console.error(err);
         toast.error("Failed to fetch comments");
@@ -65,6 +85,11 @@ const user=JSON.parse(localStorage.getItem("user"))
       if (res.data.ok) {
         toast.success("Comment added!");
         setComments((prev) => [...prev, res.data.comment]);
+        // Initialize reply count for new comment
+        setReplyCounts(prev => ({
+          ...prev,
+          [res.data.comment._id]: 0
+        }));
         setNewComment("");
       }
     } catch (err) {
@@ -79,6 +104,129 @@ const user=JSON.parse(localStorage.getItem("user"))
     } else {
       addToCart(foodItem._id);
     }
+  };
+
+  const handleLike = async (commentId) => {
+    try {
+      const res = await axios.post(
+        `${url}/api/comment/like/${commentId}`,
+        {},
+        { headers: { token } }
+      );
+      if (res.data.ok) {
+        setComments((prev) =>
+          prev.map((c) => (c._id === commentId ? res.data.comment : c))
+        );
+        toast.success("You liked this comment!");
+      }
+    } catch (err) {
+      console.error(err);
+      toast.error("Failed to like comment");
+    }
+  };
+
+  const handleDislike = async (commentId) => {
+    try {
+      const res = await axios.post(
+        `${url}/api/comment/dislike/${commentId}`,
+        {},
+        { headers: { token } }
+      );
+      if (res.data.ok) {
+        setComments((prev) =>
+          prev.map((c) => (c._id === commentId ? res.data.comment : c))
+        );
+        toast.success("You disliked this comment!");
+      }
+    } catch (err) {
+      console.error(err);
+      toast.error("Failed to dislike comment");
+    }
+  };
+
+  const hasLiked = (comment) => {
+    return comment.likedBy?.includes(user?.id);
+  };
+
+  const hasDisliked = (comment) => {
+    return comment.disLikedBy?.includes(user?.id);
+  };
+
+  const fetchReplies = async (commentId) => {
+    try {
+      const res = await axios.get(
+        `${url}/api/comment/all-replies/${commentId}`
+      );
+      if (res.data.ok) {
+        setReplies((prev) => ({
+          ...prev,
+          [commentId]: res.data.replies,
+        }));
+      }
+    } catch (err) {
+      console.error(err);
+      toast.error("Failed to load replies");
+    }
+  };
+
+  const handleAddReply = async (commentId) => {
+    if (!replyText.trim()) return;
+
+    try {
+      const res = await axios.post(
+        `${url}/api/comment/reply/${commentId}`,
+        { replyText },
+        { headers: { token } }
+      );
+
+      if (res.data.ok) {
+        toast.success("Reply added!");
+        
+        // Update replies list
+        setReplies((prev) => ({
+          ...prev,
+          [commentId]: [...(prev[commentId] || []), res.data.reply],
+        }));
+
+        // Update reply count
+        setReplyCounts(prev => ({
+          ...prev,
+          [commentId]: (prev[commentId] || 0) + 1
+        }));
+
+        setReplyText("");
+        setActiveReply(null);
+      }
+    } catch (err) {
+      console.error(err);
+      toast.error("Failed to add reply");
+    }
+  };
+
+  const toggleReplies = async (commentId) => {
+    if (!replies[commentId]) {
+      await fetchReplies(commentId);
+    } else {
+      setReplies((prev) => {
+        const newReplies = { ...prev };
+        delete newReplies[commentId];
+        return newReplies;
+      });
+    }
+  };
+
+  const getAvatarColor = (char) => {
+    const firstChar = (char?.charAt(0) || "U").toUpperCase();
+    const colors = {
+      A: "#F87171", B: "#FBBF24", C: "#34D399", D: "#60A5FA",
+      E: "#A78BFA", F: "#F472B6", G: "#FCD34D", H: "#6EE7B7",
+      I: "#3B82F6", J: "#9333EA", K: "#EF4444", L: "#F59E0B",
+      M: "#10B981", N: "#3B82F6", O: "#8B5CF6", P: "#EC4899",
+      Q: "#FACC15", R: "#22C55E", S: "#2563EB", T: "#7C3AED",
+      U: "#DB2777", V: "#F59E0B", W: "#14B8A6", X: "#6366F1",
+      Y: "#D946EF", Z: "#F43F5E"
+    };
+    return colors[firstChar] || "#6B7280";
   };
 
   if (loading)
@@ -102,53 +250,8 @@ const user=JSON.parse(localStorage.getItem("user"))
       </div>
     );
 
-  const images =
-    item.images && item.images.length > 0 ? item.images : [item.imageUrl];
-  const handleLike = async (commentId) => {
-    try {
-      const res = await axios.post(
-        `${url}/api/comment/like/${commentId}`,
-        {},
-        { headers: { token } }
-      );
-      if (res.data.ok) {
-        // Update the comments array with new like info
-        setComments((prev) =>
-          prev.map((c) => (c._id === commentId ? res.data.comment : c))
-        );
-        toast.success("You liked this comment!");
-      }
-    } catch (err) {
-      console.error(err);
-      toast.error("Failed to like comment");
-    }
-  };
-  const handleDislike = async (commentId) => {
-    try {
-      const res = await axios.post(
-        `${url}/api/comment/dislike/${commentId}`,
-        {},
-        { headers: { token } }
-      );
-     // console.log(res);
-      if (res.data.ok) {
-        setComments((prev) =>
-          prev.map((c) => (c._id === commentId ? res.data.comment : c))
-        );
-        toast.success("You disliked this comment!");
-      }
-    } catch (err) {
-      console.error(err);
-      toast.error("Failed to dislike comment");
-    }
-  };
-  const hasLiked = (comment) => {
-    return comment.likedBy.includes(user?.id);
-  };
+  const images = item.images?.length > 0 ? item.images : [item.imageUrl];
 
-  const hasDisliked = (comment) => {
-    return comment.disLikedBy.includes(user?.id);
-  };
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Main Container */}
@@ -156,7 +259,6 @@ const user=JSON.parse(localStorage.getItem("user"))
         <div className="flex flex-col lg:flex-row gap-8">
           {/* Left: Image Gallery */}
           <div className="lg:w-1/2">
-            {/* Main Image */}
             <div className="rounded-2xl overflow-hidden shadow-xl bg-white p-4">
               <img
                 src={images[selectedImage]}
@@ -165,7 +267,6 @@ const user=JSON.parse(localStorage.getItem("user"))
               />
             </div>
 
-            {/* Thumbnail Images */}
             {images.length > 1 && (
               <div className="mt-4">
                 <h3 className="text-lg font-semibold text-gray-700 mb-3">
@@ -196,21 +297,17 @@ const user=JSON.parse(localStorage.getItem("user"))
 
           {/* Right: Product Details */}
           <div className="lg:w-1/2">
-            {/* Product Header */}
             <div className="bg-white rounded-2xl shadow-xl p-6 md:p-8">
-              {/* Category Badge */}
               {item.category && (
                 <span className="inline-block px-3 py-1 text-xs font-semibold text-orange-600 bg-orange-50 rounded-full mb-4">
                   {item.category}
                 </span>
               )}
 
-              {/* Product Name */}
               <h1 className="text-3xl md:text-4xl font-bold text-gray-900 mb-3">
                 {item.name}
               </h1>
 
-              {/* Rating */}
               <div className="flex items-center gap-3 mb-6">
                 <div className="flex items-center">
                   <StarIcon className="text-yellow-500 mr-1" />
@@ -220,12 +317,10 @@ const user=JSON.parse(localStorage.getItem("user"))
                 </div>
                 <span className="text-gray-500">•</span>
                 <span className="text-gray-500">
-                  {comments.length}{" "}
-                  {comments.length === 1 ? "Review" : "Reviews"}
+                  {comments.length} {comments.length === 1 ? "Review" : "Reviews"}
                 </span>
               </div>
 
-              {/* Price */}
               <div className="mb-6">
                 <div className="text-4xl font-bold text-green-600 mb-2">
                   ${item.price}
@@ -237,7 +332,6 @@ const user=JSON.parse(localStorage.getItem("user"))
                 )}
               </div>
 
-              {/* Description */}
               <div className="mb-8">
                 <h3 className="text-xl font-semibold text-gray-900 mb-3">
                   Description
@@ -247,7 +341,6 @@ const user=JSON.parse(localStorage.getItem("user"))
                 </p>
               </div>
 
-              {/* Quantity Selector */}
               <div className="mb-8">
                 <h3 className="text-lg font-semibold text-gray-900 mb-4">
                   Quantity
@@ -291,7 +384,6 @@ const user=JSON.parse(localStorage.getItem("user"))
                 </div>
               </div>
 
-              {/* Additional Info */}
               <div className="grid grid-cols-2 gap-4 pt-6 border-t border-gray-200">
                 {item.calories && (
                   <div className="text-center">
@@ -372,68 +464,29 @@ const user=JSON.parse(localStorage.getItem("user"))
                       <div>
                         <div className="flex items-center gap-2 mb-2">
                           <div
-                            className={`w-10 h-10 rounded-full flex items-center justify-center text-white font-bold`}
-                            style={{
-                              backgroundColor: (() => {
-                                const firstChar = (
-                                  c.firstName?.charAt(0) || "U"
-                                ).toUpperCase();
-                                const colors = {
-                                  A: "#F87171",
-                                  B: "#FBBF24",
-                                  C: "#34D399",
-                                  D: "#60A5FA",
-                                  E: "#A78BFA",
-                                  F: "#F472B6",
-                                  G: "#FCD34D",
-                                  H: "#6EE7B7",
-                                  I: "#3B82F6",
-                                  J: "#9333EA",
-                                  K: "#EF4444",
-                                  L: "#F59E0B",
-                                  M: "#10B981",
-                                  N: "#3B82F6",
-                                  O: "#8B5CF6",
-                                  P: "#EC4899",
-                                  Q: "#FACC15",
-                                  R: "#22C55E",
-                                  S: "#2563EB",
-                                  T: "#7C3AED",
-                                  U: "#DB2777",
-                                  V: "#F59E0B",
-                                  W: "#14B8A6",
-                                  X: "#6366F1",
-                                  Y: "#D946EF",
-                                  Z: "#F43F5E",
-                                };
-                                return colors[firstChar] || "#6B7280"; // fallback gray
-                              })(),
-                            }}
+                            className="w-10 h-10 rounded-full flex items-center justify-center text-white font-bold"
+                            style={{ backgroundColor: getAvatarColor(c.firstName) }}
                           >
                             {c.firstName?.charAt(0)?.toUpperCase() || "U"}
                           </div>
 
-                          <div className="flex gap-x-2">
+                          <div className="flex gap-x-2 items-center">
                             <p className="font-semibold text-gray-900">
-                              {c.firstName || "Anonymous User"}
-                            </p>
-                            <p className="font-semibold text-gray-900">
-                              {c.lastName || "Anonymous User"}
+                              {c.firstName || "Anonymous"} {c.lastName}
                             </p>
                             <div className="flex items-center gap-1 text-sm text-gray-500">
-                              <StarIcon
-                                className="text-yellow-500"
-                                sx={{ fontSize: 16 }}
-                              />
+                              <StarIcon className="text-yellow-500" sx={{ fontSize: 16 }} />
                               <span>{item.rating || 5.0}</span>
                             </div>
                           </div>
                         </div>
                       </div>
                       <span className="text-sm text-gray-500">
-                        {new Date(
-                          c.createdAt || Date.now()
-                        ).toLocaleDateString()}
+                        {new Date(c.createdAt).toLocaleDateString('en-US', {
+                                            month: 'short',
+                                            day: 'numeric',
+                                            year: 'numeric'
+                                          })}
                       </span>
                     </div>
 
@@ -464,6 +517,102 @@ const user=JSON.parse(localStorage.getItem("user"))
                         <ThumbDownOffAltIcon sx={{ fontSize: 20 }} />
                         <span className="text-sm">{c.totalDislikes || 0}</span>
                       </button>
+                      <button
+                        onClick={() => toggleReplies(c._id)}
+                        className="text-sm text-gray-600 hover:text-orange-500 font-medium flex items-center gap-1"
+                      >
+                        {replies[c._id] ? (
+                          <FaChevronUp className="text-xs" />
+                        ) : (
+                          <FaChevronDown className="text-xs" />
+                        )}
+                        {replyCounts[c._id] || 0} replies
+                      </button>
+                    </div>
+
+                    {/* Reply Section */}
+                    <div className="mt-4 space-y-4">
+                      {/* Reply Input */}
+                      <div className="flex gap-3 ml-8 py-4">
+                        <div className="flex-shrink-0 ">
+                          <div
+                            className="w-8 h-8 rounded-full flex items-center justify-center text-white text-xs font-bold"
+                            style={{ backgroundColor: getAvatarColor(user?.firstName) }}
+                          >
+                            {user?.firstName?.charAt(0)?.toUpperCase() || "U"}
+                          </div>
+                        </div>
+
+                        <div className="flex-1 space-y-2">
+                          <div className="relative">
+                            <input
+                              type="text"
+                              placeholder="Add a reply..."
+                              value={activeReply === c._id ? replyText : ""}
+                              onChange={(e) => setReplyText(e.target.value)}
+                              onFocus={() => setActiveReply(c._id)}
+                              className="w-full px-4 py-2 text-sm border border-gray-300 rounded-full focus:ring-2 focus:ring-orange-500 focus:border-transparent outline-none transition-all"
+                            />
+                            {activeReply === c._id && replyText.trim() && (
+                              <div className="absolute right-2 top-1/2 transform -translate-y-1/2 flex gap-2">
+                                <button
+                                  onClick={() => {
+                                    setReplyText("");
+                                    setActiveReply(null);
+                                  }}
+                                  className="text-sm text-gray-500 hover:text-gray-700 px-2 py-1"
+                                >
+                                  Cancel
+                                </button>
+                                <button
+                                  onClick={() => handleAddReply(c._id)}
+                                  className="text-sm bg-orange-500 text-white px-3 py-1 rounded-full hover:bg-orange-600 transition-colors"
+                                >
+                                  Reply
+                                </button>
+                              </div>
+                            )}
+                          </div>
+                          
+                          {/* Replies List */}
+                          {replies[c._id] && (
+                            <div className="space-y-4 pt-4 ">
+                              {replies[c._id].map((reply) => (
+                                <div key={reply._id} className="flex gap-1">
+                                  <div className="flex-shrink-0 py-4">
+                                    <div
+                                      className="w-8 h-8 rounded-full flex items-center justify-center text-white text-xs font-bold"
+                                      style={{ backgroundColor: getAvatarColor(reply.firstName) }}
+                                    >
+                                      {reply.firstName?.charAt(0)?.toUpperCase() || "U"}
+                                    </div>
+                                  </div>
+
+                                  <div className="flex-1 py-2">
+                                    <div className="bg-gray-50 rounded-2xl p-3">
+                                      <div className="flex items-center gap-2 mb-1">
+                                        <span className="text-sm font-semibold text-gray-900">
+                                          {reply.firstName} {reply.lastName}
+                                        </span>
+                                        <span className="text-xs text-gray-500">
+                                          {new Date(reply.createdAt).toLocaleDateString('en-US', {
+                                            month: 'short',
+                                            day: 'numeric',
+                                            year: 'numeric'
+                                          })}
+                                        </span>
+                                      </div>
+                                      <p className="text-sm text-gray-700 mb-2">
+                                        {reply.replyText}
+                                      </p>
+                                    </div>
+                                  </div>
+                                </div>
+                              ))}
+                            </div>
+                          )}
+                        </div>
+                      </div>
                     </div>
                   </div>
                 ))}
