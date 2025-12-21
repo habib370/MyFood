@@ -5,8 +5,10 @@ const foodSchema = new mongoose.Schema({
   description: { type: String, required: true },
   price: { type: Number, required: true },
   category: { type: String, required: true },
-  imageUrl: { type: String, required: true }, // Cloudinary secure URL
-  imageId: { type: String, required: true },  // Cloudinary public_id
+  imageUrl: { type: String, required: true }, 
+  imageId: { type: String, required: true },  
+  isAvailable:{type:Boolean,default:true},
+  discount:{type:Number,default:0}
 });
 foodSchema.index({
   name: "text",
