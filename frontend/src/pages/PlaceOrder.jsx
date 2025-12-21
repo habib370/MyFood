@@ -5,6 +5,8 @@ import axios from "axios";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { TbCurrencyTaka } from "react-icons/tb";
+import { FaTag } from "react-icons/fa";
+
 export const PlaceOrder = () => {
   const { food_list, cartItems, removeAllFromCart, url, token } =
     useContext(StoreContext);
@@ -19,8 +21,33 @@ export const PlaceOrder = () => {
     extraInfo: "",
   });
 
-  // Calculate total price
+  // Calculate discounted price
+  const calculateDiscountedPrice = (price, discount) => {
+    if (!discount || discount <= 0) return price;
+    return price - (price * discount) / 100;
+  };
+
+  // Calculate total price with discounts
   const totalPrice = food_list.reduce((total, item) => {
+    if (cartItems[item._id] > 0) {
+      const discountedPrice = calculateDiscountedPrice(item.price, item.discount);
+      return total + cartItems[item._id] * discountedPrice;
+    }
+    return total;
+  }, 0);
+
+  // Calculate total savings
+  const totalSavings = food_list.reduce((savings, item) => {
+    if (cartItems[item._id] > 0 && item.discount && item.discount > 0) {
+      const originalPrice = item.price * cartItems[item._id];
+      const discountedPrice = calculateDiscountedPrice(item.price, item.discount) * cartItems[item._id];
+      return savings + (originalPrice - discountedPrice);
+    }
+    return savings;
+  }, 0);
+
+  // Calculate original subtotal (without discounts)
+  const originalSubtotal = food_list.reduce((total, item) => {
     if (cartItems[item._id] > 0) {
       return total + cartItems[item._id] * item.price;
     }
@@ -61,11 +88,15 @@ export const PlaceOrder = () => {
         name: item.name,
         qty: cartItems[item._id],
         price: item.price,
+        discount: item.discount || 0,
+        discountedPrice: calculateDiscountedPrice(item.price, item.discount)
       }));
 
     const orderData = {
       items: orderItems,
       amount: totalPrice,
+      originalAmount: originalSubtotal,
+      savings: totalSavings,
       address: formData,
     };
 
@@ -205,6 +236,11 @@ export const PlaceOrder = () => {
                 <div className="space-y-3 max-h-60 overflow-y-auto">
                   {food_list.map((item) => {
                     if (cartItems[item._id] > 0) {
+                      const hasDiscount = item.discount && item.discount > 0;
+                      const discountedPrice = calculateDiscountedPrice(item.price, item.discount);
+                      const itemTotal = cartItems[item._id] * discountedPrice;
+                      const originalItemTotal = cartItems[item._id] * item.price;
+
                       return (
                         <div
                           key={item._id}
@@ -212,22 +248,38 @@ export const PlaceOrder = () => {
                         >
                           <div className="flex items-center gap-2">
                             <img
-                              src={ item.imageUrl}
+                              src={item.imageUrl}
                               alt={item.name}
                               className="w-10 h-10 object-cover rounded-lg"
                             />
                             <div>
-                              <p className="font-medium text-sm text-gray-800">
-                                {item.name}
-                              </p>
+                              <div className="flex items-center gap-1">
+                                <p className="font-medium text-sm text-gray-800">
+                                  {item.name}
+                                </p>
+                                {hasDiscount && (
+                                  <div className="inline-flex items-center gap-1 px-1.5 py-0.5 bg-red-100 text-red-700 text-xs rounded-full">
+                                    <FaTag className="w-2 h-2" />
+                                    <span>{item.discount}%</span>
+                                  </div>
+                                )}
+                              </div>
                               <p className="text-xs text-gray-500">
                                 Qty: {cartItems[item._id]}
                               </p>
                             </div>
                           </div>
-                          <div className="font-semibold text-gray-800 flex items-center">
-                            {(cartItems[item._id] * item.price).toFixed(2)}
-                            <TbCurrencyTaka className="text-xl"/>
+                          <div className="flex flex-col items-end">
+                            <div className={`font-semibold flex items-center ${hasDiscount ? 'text-red-600' : 'text-gray-800'}`}>
+                              {itemTotal.toFixed(2)}
+                              <TbCurrencyTaka className="text-sm ml-1" />
+                            </div>
+                            {hasDiscount && (
+                              <div className="text-xs text-gray-500 line-through flex items-center">
+                                {originalItemTotal.toFixed(2)}
+                                <TbCurrencyTaka className="text-xs ml-1" />
+                              </div>
+                            )}
                           </div>
                         </div>
                       );
@@ -239,32 +291,80 @@ export const PlaceOrder = () => {
 
               {/* Pricing Breakdown */}
               <div className="space-y-4">
+                {/* Original Subtotal */}
+                {totalSavings > 0 && (
+                  <div className="flex justify-between items-center">
+                    <span className="text-gray-600">Original Subtotal:</span>
+                    <div className="text-sm text-gray-500 line-through flex items-center">
+                      {originalSubtotal.toFixed(2)}
+                      <TbCurrencyTaka className="text-xs ml-1" />
+                    </div>
+                  </div>
+                )}
+
+                {/* Savings */}
+                {totalSavings > 0 && (
+                  <div className="flex justify-between items-center">
+                    <span className="text-gray-600 flex items-center gap-1">
+                      <FaTag className="text-green-500" />
+                      Total Savings:
+                    </span>
+                    <div className="font-medium text-green-600 flex items-center">
+                      -{totalSavings.toFixed(2)}
+                      <TbCurrencyTaka className="text-sm ml-1" />
+                    </div>
+                  </div>
+                )}
+
+                {/* Subtotal */}
                 <div className="flex justify-between items-center">
                   <span className="text-gray-600">Subtotal:</span>
                   <div className="font-medium text-gray-800 flex items-center">
                     {totalPrice.toFixed(2)}
-                    <TbCurrencyTaka className="text-xl"/>
+                    <TbCurrencyTaka className="text-xl ml-1" />
                   </div>
                 </div>
 
+                {/* Delivery Fee */}
                 <div className="flex justify-between items-center">
                   <span className="text-gray-600">Delivery Fee:</span>
                   <div className="font-medium text-gray-800 flex items-center">
                     {deliveryFee.toFixed(2)}
-                    <TbCurrencyTaka className="text-xl"/>
+                    <TbCurrencyTaka className="text-xl ml-1" />
                   </div>
                 </div>
 
                 <hr className="border-gray-300" />
 
+                {/* Grand Total */}
                 <div className="flex justify-between items-center text-lg font-bold">
                   <span className="text-gray-800">Grand Total:</span>
                   <div className="text-orange-600 text-xl flex items-center">
                     {grandTotal.toFixed(2)}
-                    <TbCurrencyTaka className="text-2xl"/>
+                    <TbCurrencyTaka className="text-2xl ml-1" />
                   </div>
                 </div>
               </div>
+
+              {/* Total Savings Summary */}
+              {totalSavings > 0 && (
+                <div className="mt-4 p-3 bg-green-50 border border-green-200 rounded-lg">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-2">
+                      <FaTag className="text-green-600" />
+                      <span className="text-sm font-medium text-green-800">
+                        You're saving!
+                      </span>
+                    </div>
+                    <div className="text-green-700 font-bold">
+                      {totalSavings.toFixed(2)} <TbCurrencyTaka className="inline text-sm" />
+                    </div>
+                  </div>
+                  <p className="text-xs text-green-600 mt-1">
+                    Great deal! You saved {((totalSavings / originalSubtotal) * 100).toFixed(1)}% on your order.
+                  </p>
+                </div>
+              )}
 
               {/* Checkout Button */}
               <button
