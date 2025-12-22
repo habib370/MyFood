@@ -54,10 +54,39 @@ export const addFood = async (req, res) => {
 };
 
 // Get all food
+// export const listFood = async (req, res) => {
+//   try {
+//     const foods = await foodModel.find({});
+//     res.json({ ok: true, data: foods });
+//   } catch (error) {
+//     console.error("Error from listFood:", error);
+//     res.status(500).json({ ok: false, error: error.message });
+//   }
+// };
 export const listFood = async (req, res) => {
   try {
-    const foods = await foodModel.find({});
-    res.json({ ok: true, data: foods });
+    const page = parseInt(req.query.page) || 1;   // current page
+    const limit = parseInt(req.query.limit) || 10; // items per page
+
+    const skip = (page - 1) * limit;
+
+    const foods = await foodModel
+      .find({})
+      .skip(skip)
+      .limit(limit)
+      .sort({ createdAt: -1 }); // optional
+
+    const totalItems = await foodModel.countDocuments();
+
+    res.json({
+      ok: true,
+      data: foods,
+      pagination: {
+        totalItems,
+        currentPage: page,
+        totalPages: Math.ceil(totalItems / limit),
+      },
+    });
   } catch (error) {
     console.error("Error from listFood:", error);
     res.status(500).json({ ok: false, error: error.message });
