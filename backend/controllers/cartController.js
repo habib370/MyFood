@@ -2,6 +2,9 @@ import userModel from '../models/userModel.js'
 
 export const addToCart = async (req, res) => {
   try {
+    if(!req.userId){
+      return res.json({ok:false,message:"token not found"});
+    }
     // Find the user
     const userData = await userModel.findById(req.userId);
 
