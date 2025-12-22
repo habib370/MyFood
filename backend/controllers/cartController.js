@@ -1,20 +1,34 @@
 import userModel from '../models/userModel.js'
 
-export const addToCart=async(req,res)=>{
-   try {
-    let userData=await userModel.findOne({_id:req.userId})
-    let cartData=await userData.cartData;
-    if(!cartData[req.body.itemId]){
-      cartData[req.body.itemId]=1;
-    }else{
-      cartData[req.body.itemId]+=1;
+export const addToCart = async (req, res) => {
+  try {
+    // Find the user
+    const userData = await userModel.findById(req.userId);
+
+    // Handle case where user is not found
+    if (!userData) {
+      return res.status(404).json({ ok: false, message: "User not found" });
     }
-    await userModel.findByIdAndUpdate(req.userId,{cartData})
-    res.json({ok:true,message:"item added to cart"})
-   } catch (error) {
-    res.json({ok:false,message:error.message})
-   }
-}
+
+    // Ensure cartData exists
+    const cartData = userData.cartData || {};
+
+    // Add item to cart
+    if (!cartData[req.body.itemId]) {
+      cartData[req.body.itemId] = 1;
+    } else {
+      cartData[req.body.itemId] += 1;
+    }
+
+    // Update user
+    await userModel.findByIdAndUpdate(req.userId, { cartData });
+
+    res.json({ ok: true, message: "Item added to cart" });
+  } catch (error) {
+    res.json({ ok: false, message: error.message });
+  }
+};
+
 
 //remove from cart
 export const removeFromCart=async(req,res)=>{
