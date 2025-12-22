@@ -1,8 +1,6 @@
 import React, { useContext, useState } from "react";
 import { StoreContext } from "../context/StoreContext.jsx";
 import axios from "axios";
-import { ToastContainer, toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
 import { useNavigate } from "react-router-dom";
 
 export const EditProfile = () => {
@@ -59,7 +57,7 @@ export const EditProfile = () => {
       if (response.data.ok) {
         setUser(response.data.user);
         navigate("/profile");
-        toast.success(response.data.message);
+       console.log(response.data.message);
       } else {
         console.log(response.data.message);
       }
@@ -80,7 +78,7 @@ export const EditProfile = () => {
       );
       if (response.data.ok) {
         navigate("/profile");
-        toast.success(response.data.message);
+        console.log(response.data.message);
       } else {
         console.log(response.data.message);
       }

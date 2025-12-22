@@ -8,14 +8,13 @@ import { PlaceOrder } from "./pages/PlaceOrder.jsx";
 import { Delivery } from "./pages/Delivery.jsx";
 import { LoginPopup } from "./components/LoginPopup.jsx";
 import { Footer } from "./components/Footer.jsx";
-import { ToastContainer } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
 import { Myorders } from "./pages/Myorders.jsx";
 import { MobileNavbar } from "./components/MobileNavbar.jsx";
 import { Profile } from "./pages/Profile.jsx";
 import {EditProfile} from './pages/EditProfile.jsx'
 import {SingleFoodItem} from './pages/SIngleFoodItem.jsx'
 import {StoreContext} from './context/StoreContext.jsx'
+import { Slide } from 'react-toastify';
 function App() {
   
   const { showLogInPopUp, setShowLogInPopUp } = useContext(StoreContext);
@@ -45,38 +44,7 @@ function App() {
       </main>
 
       <Footer />
-      <ToastContainer
-        position="top-right"
-        autoClose={3000}
-        hideProgressBar={false}
-        newestOnTop={false}
-        closeOnClick
-        rtl={false}
-        pauseOnFocusLoss
-        draggable
-        pauseOnHover
-        toastStyle={{
-          background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
-          color: "white",
-          fontSize: "0.8rem",
-          padding: "12px 16px",
-          borderRadius: "12px",
-          boxShadow: "0 4px 15px rgba(0,0,0,0.3), 0 2px 5px rgba(0,0,0,0.2)",
-          border: "1px solid rgba(255,255,255,0.1)",
-          backdropFilter: "blur(10px)",
-          minHeight: "50px",
-          width: "280px",
-          fontWeight: "500",
-        }}
-        progressStyle={{
-          background: "linear-gradient(90deg, #ffd89b 0%, #19547b 100%)",
-          height: "3px",
-        }}
-        bodyStyle={{
-          margin: 0,
-          padding: 0,
-        }}
-      />
+     
     </div>
   );
 }

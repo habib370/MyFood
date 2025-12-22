@@ -2,8 +2,6 @@ import React, { useContext, useState } from "react";
 import { StoreContext } from "../context/StoreContext.jsx";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
-import { ToastContainer, toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
 import { TbCurrencyTaka } from "react-icons/tb";
 import { FaTag } from "react-icons/fa";
 
@@ -71,7 +69,7 @@ export const PlaceOrder = () => {
     // Validate required fields
     const { fullname, email, city, street } = formData;
     if (!fullname || !email || !city || !street) {
-      toast.error("Please fill in all required address fields!");
+     console.log("Please fill in all required address fields!");
       return;
     }
 
@@ -106,21 +104,19 @@ export const PlaceOrder = () => {
       });
 
       if (response.data.ok) {
-        toast.success("Order submitted successfully");
+       
         navigate("/delivery");
       } else {
-        toast.error("Something went wrong!");
         console.log(response.data.message);
       }
     } catch (error) {
-      toast.error("Failed to submit order!");
+    console.log("Failed to submit order!");
       console.log(error);
     }
   };
 
   return (
     <div className="min-h-screen bg-gray-50 py-8">
-      <ToastContainer />
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 ">
         <div className="text-center mb-8">
           <h1 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-2">

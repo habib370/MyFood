@@ -8,6 +8,7 @@ export const Cart = () => {
   const navigate = useNavigate();
   const { food_list, cartItems, addToCart, deleteFromCart, removeAllFromCart, url } =
     useContext(StoreContext);
+     console.log(cartItems);
 
   // Calculate discounted price
   const calculateDiscountedPrice = (price, discount) => {

@@ -1,7 +1,7 @@
 import { createContext, useState, useEffect } from "react";
-import { food_list } from "../assets/assets";
 import { jwtDecode } from "jwt-decode";
 import axios from "axios";
+
 export const StoreContext = createContext(null);
 
 const StoreContextProvider = ({ children }) => {
@@ -10,57 +10,41 @@ const StoreContextProvider = ({ children }) => {
   const [token, setToken] = useState("");
   const [user, setUser] = useState(null);
 
-   const url = "https://myfood-backend-fngt.onrender.com";
- // const url = "http://localhost:4000";
- const [food_list, setFoodList] = useState([]);
-const [page, setPage] = useState(1);
-const [hasMore, setHasMore] = useState(true);
-const LIMIT = 8;
+  const url = "https://myfood-backend-fngt.onrender.com";
+  //const url="http://localhost:4000";
+  const [food_list, setFoodList] = useState([]);
+  const [page, setPage] = useState(1);
+  const [limit] = useState(8);
+  const [hasMore, setHasMore] = useState(true);
 
+  // Fetch foods with pagination
+  const getFoodPage = async (pageNumber = 1) => {
+    try {
+      const response = await axios.get(`${url}/api/food/list?page=${pageNumber}&limit=${limit}`);
+      if (response.data.ok) {
+        if (pageNumber === 1) {
+          setFoodList(response.data.data);
+        } else {
+          setFoodList((prev) => [...prev, ...response.data.data]);
+        }
 
-  // const getAllFood = async () => {
-  //   const response = await axios.get(`${url}/api/food/list`);
-  //   if (response.data.ok) {
-  //     setFoodList(response.data.data);
-  //   }
-  // };
-  const getAllFood = async (pageNumber = 1) => {
-  try {
-    if (!hasMore) return;
-
-    const res = await axios.get(
-      `${url}/api/food/list?page=${pageNumber}&limit=${LIMIT}`
-    );
-
-    if (res.data.data.length === 0) {
-      setHasMore(false);
-      return;
+        // Check if there are more items
+        setHasMore(pageNumber < response.data.pagination.totalPages);
+      }
+    } catch (err) {
+      console.error(err);
     }
+  };
 
-    setFoodList(prev => [...prev, ...res.data.data]);
-  } catch (error) {
-    console.error("Food fetch error:", error);
-  }
-};
-const loadMoreFoods = () => {
-  if (!hasMore) return;
+  // Load first page on mount
+  useEffect(() => {
+    getFoodPage(1);
 
-  const nextPage = page + 1;
-  setPage(nextPage);
-   getAllFood(nextPage);
-};
-
-
-  // Load token & user from localStorage on app load
- useEffect(() => {
-  getAllFood(1);
-
-  const savedToken = localStorage.getItem("token");
-  const savedUser = localStorage.getItem("user");
-  if (savedToken) setToken(savedToken);
-  if (savedUser) setUser(JSON.parse(savedUser));
-}, []);
-
+    const savedToken = localStorage.getItem("token");
+    const savedUser = localStorage.getItem("user");
+    if (savedToken) setToken(savedToken);
+    if (savedUser) setUser(JSON.parse(savedUser));
+  }, []);
 
   // Persist token & user whenever they change
   useEffect(() => {
@@ -78,7 +62,6 @@ const loadMoreFoods = () => {
         localStorage.removeItem("user");
       }
     };
-
     syncData();
   }, [token, user]);
 
@@ -122,70 +105,55 @@ const loadMoreFoods = () => {
   };
 
   const addToCart = async (itemId) => {
-    if (!cartItems[itemId]) {
-      setCartItems((prev) => ({ ...prev, [itemId]: 1 }));
-    } else {
-      setCartItems((prev) => ({ ...prev, [itemId]: prev[itemId] + 1 }));
-    }
-    await axios.post(url + "/api/cart/add", { itemId }, { headers: { token } });
+    setCartItems((prev) => ({ ...prev, [itemId]: (prev[itemId] || 0) + 1 }));
+   const res= await axios.post(url + "/api/cart/add", { itemId }, { headers: { token } });
+   console.log(res.data)
   };
 
   const deleteFromCart = async (itemId) => {
-    if (cartItems[itemId]) {
-      setCartItems((prev) => ({ ...prev, [itemId]: prev[itemId] - 1 }));
-    }
-    await axios.post(
-      url + "/api/cart/remove",
-      { itemId },
-      { headers: { token } }
-    );
+    setCartItems((prev) => ({ ...prev, [itemId]: Math.max((prev[itemId] || 0) - 1, 0) }));
+    await axios.post(url + "/api/cart/remove", { itemId }, { headers: { token } });
   };
 
   const removeAllFromCart = async (itemId) => {
-    if (cartItems[itemId]) {
-      setCartItems((prev) => ({ ...prev, [itemId]: 0 }));
-    }
-
-    await axios.post(
-      url + "/api/cart/deleteAll",
-      { itemId },
-      { headers: { token } }
-    );
+    setCartItems((prev) => ({ ...prev, [itemId]: 0 }));
+    await axios.post(url + "/api/cart/deleteAll", { itemId }, { headers: { token } });
   };
+
   const getAllItemsFromTheCart = async (tkn) => {
-    const response = await axios.get(url + "/api/cart/get", {
-      headers: { token: tkn },
-    });
-
-    if (response.data.ok) {
-      setCartItems(response.data.cartData);
-    }
+    const response = await axios.get(url + "/api/cart/get", { headers: { token: tkn } });
+    if (response.data.ok) setCartItems(response.data.cartData);
   };
-
 
   const fetchAllReview = async (itemId) => {
-  if (!itemId) return 0;
-
-  try {
-    const res = await axios.get(`${url}/api/comment/${itemId}`);
-    if (res.data.ok) {
-      return res.data.comments.length;  
+    if (!itemId) return 0;
+    try {
+      const res = await axios.get(`${url}/api/comment/${itemId}`);
+      return res.data.ok ? res.data.comments.length : 0;
+    } catch (err) {
+      console.error(err);
+      return 0;
     }
-    return 0;
-  } catch (err) {
-    console.error(err);
-    return 0;
-  }
-};
+  };
 
+  // Load more function
+const loadMore = async () => {
+  if (!hasMore) return;
+
+  // Use functional state update to ensure correct page number
+  setPage((prevPage) => {
+    const nextPage = prevPage + 1;
+
+    getFoodPage(nextPage); // fetch next page
+    return nextPage;       // update page state
+  });
+};
 
 
   const contextValue = {
     showLogInPopUp,
     setShowLogInPopUp,
     food_list,
-    loadMoreFoods,
-    hasMore,
     cartItems,
     setCartItems,
     addToCart,
@@ -197,14 +165,12 @@ const loadMoreFoods = () => {
     isLoggedIn,
     setUser,
     user,
-    fetchAllReview
+    fetchAllReview,
+    loadMore,
+    hasMore,
   };
 
-  return (
-    <StoreContext.Provider value={contextValue}>
-      {children}
-    </StoreContext.Provider>
-  );
+  return <StoreContext.Provider value={contextValue}>{children}</StoreContext.Provider>;
 };
 
 export default StoreContextProvider;

@@ -1,4 +1,4 @@
-import React, { useContext, useEffect } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { StoreContext } from "../context/StoreContext.jsx";
 import { assets } from "../assets/assets.js";
@@ -6,7 +6,6 @@ import { ToastContainer, toast } from "react-toastify";
 import { TbCurrencyTaka } from "react-icons/tb";
 import "react-toastify/dist/ReactToastify.css";
 import { FoodDisplaySkelton } from "./FoodDisplaySkelton.jsx";
-import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 import { GiEmptyHourglass } from "react-icons/gi";
 import { FaCheckCircle, FaTag } from "react-icons/fa";
 
@@ -14,19 +13,36 @@ export const FoodDisplay = ({ category }) => {
   const navigate = useNavigate();
   const {
     food_list,
-    loadMoreFoods,
-    hasMore,
     cartItems,
     addToCart,
     deleteFromCart,
     isLoggedIn,
-    url,
     fetchAllReview,
-    showLogInPopUp,
     setShowLogInPopUp,
+    loadMore,
+    hasMore,
   } = useContext(StoreContext);
-  const [reviewCount, setReviewCounts] = React.useState({});
 
+  const [reviewCount, setReviewCounts] = React.useState({});
+  const [loadingMore, setLoadingMore] = useState(false);
+  useEffect(() => {
+    const handleScroll = async () => {
+      if (loadingMore || !hasMore) return;
+
+      // Check if the user scrolled near the bottom (300px from bottom)
+      if (
+        window.innerHeight + window.scrollY >=
+        document.body.offsetHeight - 300
+      ) {
+        setLoadingMore(true);
+        await loadMore();
+        setLoadingMore(false);
+      }
+    };
+
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, [loadingMore, hasMore]);
   useEffect(() => {
     const loadAllReviewCounts = async () => {
       const counts = {};
@@ -43,25 +59,13 @@ export const FoodDisplay = ({ category }) => {
       loadAllReviewCounts();
     }
   }, [food_list]);
-useEffect(() => {
-  const handleScroll = () => {
-    if (
-      window.innerHeight + document.documentElement.scrollTop + 100 >=
-      document.documentElement.scrollHeight
-    ) {
-      loadMoreFoods();
-    }
-  };
-
-  window.addEventListener("scroll", handleScroll);
-  return () => window.removeEventListener("scroll", handleScroll);
-}, [loadMoreFoods]);
 
   const handleAddToCart = (foodItem) => {
     if (!isLoggedIn()) {
       toast.error("Please log in first");
       setShowLogInPopUp(true);
     } else {
+     
       addToCart(foodItem._id);
     }
   };
@@ -97,11 +101,11 @@ useEffect(() => {
           .map((foodItem) => {
             const quantity = cartItems[foodItem._id] || 0;
             const isAvailable = foodItem.isAvailable !== false;
-          const hasDiscount = Number(foodItem.discount) > 0;
+            const hasDiscount = Number(foodItem.discount) > 0;
 
             const originalPrice = parseFloat(foodItem.price);
             const discountPercentage = foodItem.discount || 0;
-            const discountedPrice = hasDiscount 
+            const discountedPrice = hasDiscount
               ? calculateDiscountedPrice(originalPrice, discountPercentage)
               : originalPrice;
 
@@ -131,9 +135,10 @@ useEffect(() => {
                   className={`
                     absolute top-4 right-4 z-20 px-3 py-1.5 rounded-full 
                     text-xs font-bold shadow-lg backdrop-blur-sm
-                    ${isAvailable
-                      ? "bg-green-100 text-green-800 border border-green-300"
-                      : "bg-red-100 text-red-800 border border-red-300"
+                    ${
+                      isAvailable
+                        ? "bg-green-100 text-green-800 border border-green-300"
+                        : "bg-red-100 text-red-800 border border-red-300"
                     }
                   `}
                 >
@@ -167,9 +172,10 @@ useEffect(() => {
                     {/* Gradient Overlay */}
                     <div
                       className={`absolute inset-0 bg-gradient-to-t from-black/20 to-transparent 
-                        ${isAvailable
-                          ? "opacity-0 group-hover:opacity-100"
-                          : "opacity-50"
+                        ${
+                          isAvailable
+                            ? "opacity-0 group-hover:opacity-100"
+                            : "opacity-50"
                         } 
                         transition-opacity duration-300`}
                     />
@@ -195,9 +201,10 @@ useEffect(() => {
                       <h2
                         className={`
                           text-xl font-bold line-clamp-1
-                          ${isAvailable
-                            ? "text-gray-900 group-hover:text-orange-600"
-                            : "text-gray-500"
+                          ${
+                            isAvailable
+                              ? "text-gray-900 group-hover:text-orange-600"
+                              : "text-gray-500"
                           }
                           transition-colors
                         `}
@@ -219,11 +226,12 @@ useEffect(() => {
                         className={`
                           z-20 px-3 py-2 text-sm font-bold rounded-lg shadow-lg 
                           transition-all duration-200 hover:scale-105 active:scale-95
-                          ${isAvailable
-                            ? hasDiscount
-                              ? "bg-gradient-to-r from-red-500 to-orange-500 text-white hover:shadow-xl"
-                              : "bg-gradient-to-r from-yellow-500 to-orange-600 text-white hover:shadow-xl"
-                            : "bg-gray-300 text-gray-500 cursor-not-allowed"
+                          ${
+                            isAvailable
+                              ? hasDiscount
+                                ? "bg-gradient-to-r from-red-500 to-orange-500 text-white hover:shadow-xl"
+                                : "bg-gradient-to-r from-yellow-500 to-orange-600 text-white hover:shadow-xl"
+                              : "bg-gray-300 text-gray-500 cursor-not-allowed"
                           }
                         `}
                         disabled={!isAvailable}
@@ -251,11 +259,12 @@ useEffect(() => {
                           <h3
                             className={`
                               text-2xl font-bold bg-clip-text text-transparent
-                              ${isAvailable
-                                ? hasDiscount
-                                  ? "bg-gradient-to-r from-red-600 to-orange-600"
-                                  : "bg-gradient-to-r from-orange-600 to-red-600"
-                                : "bg-gradient-to-r from-gray-400 to-gray-500"
+                              ${
+                                isAvailable
+                                  ? hasDiscount
+                                    ? "bg-gradient-to-r from-red-600 to-orange-600"
+                                    : "bg-gradient-to-r from-orange-600 to-red-600"
+                                  : "bg-gradient-to-r from-gray-400 to-gray-500"
                               }
                             `}
                           >
@@ -264,14 +273,17 @@ useEffect(() => {
                           <TbCurrencyTaka
                             className={`
                               text-3xl font-bold
-                              ${isAvailable 
-                                ? hasDiscount ? "text-red-600" : "text-orange-600"
-                                : "text-gray-400"
+                              ${
+                                isAvailable
+                                  ? hasDiscount
+                                    ? "text-red-600"
+                                    : "text-orange-600"
+                                  : "text-gray-400"
                               }
                             `}
                           />
                         </div>
-                        
+
                         {/* Original Price with strikethrough if discount exists */}
                         {hasDiscount && isAvailable && (
                           <div className="flex items-center">
@@ -282,20 +294,26 @@ useEffect(() => {
                           </div>
                         )}
                       </div>
-                      
+
                       {/* You Save Amount */}
                       {hasDiscount && isAvailable && (
                         <div className="text-xs text-green-600 font-semibold mt-1">
-                          Save {((originalPrice * discountPercentage) / 100).toFixed(2)}৳
+                          Save{" "}
+                          {((originalPrice * discountPercentage) / 100).toFixed(
+                            2
+                          )}
+                          ৳
                         </div>
                       )}
                     </div>
-                    
+
                     <div className="flex items-center gap-2">
                       <img
                         src={assets.rating_starts}
                         alt="rating"
-                        className={`w-20 opacity-90 ${!isAvailable ? "grayscale opacity-50" : ""}`}
+                        className={`w-20 opacity-90 ${
+                          !isAvailable ? "grayscale opacity-50" : ""
+                        }`}
                       />
                       <span
                         className={`
@@ -339,9 +357,10 @@ useEffect(() => {
                           w-full font-semibold py-3 px-6 rounded-xl
                           transition-all duration-300 transform hover:scale-105
                           shadow-lg flex items-center justify-center gap-2
-                          ${hasDiscount
-                            ? "bg-gradient-to-r from-red-500 to-orange-500 text-white hover:shadow-red-500/25 hover:from-red-600 hover:to-orange-600"
-                            : "bg-gradient-to-r from-green-500 to-emerald-600 text-white hover:shadow-green-500/25 hover:from-green-600 hover:to-emerald-700"
+                          ${
+                            hasDiscount
+                              ? "bg-gradient-to-r from-red-500 to-orange-500 text-white hover:shadow-red-500/25 hover:from-red-600 hover:to-orange-600"
+                              : "bg-gradient-to-r from-green-500 to-emerald-600 text-white hover:shadow-green-500/25 hover:from-green-600 hover:to-emerald-700"
                           }
                         `}
                       >
@@ -383,14 +402,16 @@ useEffect(() => {
 
                         <button
                           onClick={() => addToCart(foodItem._id)}
+                          
                           className={`
                             w-10 h-10 rounded-lg text-white
                             transition-all duration-200
                             flex items-center justify-center font-bold text-lg
                             transform hover:scale-110 shadow-md
-                            ${hasDiscount
-                              ? "bg-gradient-to-r from-red-500 to-orange-500 hover:from-red-600 hover:to-orange-600"
-                              : "bg-green-500 hover:bg-green-600"
+                            ${
+                              hasDiscount
+                                ? "bg-gradient-to-r from-red-500 to-orange-500 hover:from-red-600 hover:to-orange-600"
+                                : "bg-green-500 hover:bg-green-600"
                             }
                           `}
                         >
@@ -403,40 +424,18 @@ useEffect(() => {
 
                 {/* Glow Effect - Only for available items */}
                 {isAvailable && (
-                  <div className={`absolute inset-0 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 -z-10 ${
-                    hasDiscount
-                      ? "bg-gradient-to-r from-red-500/10 to-orange-500/10"
-                      : "bg-gradient-to-r from-orange-500/10 to-red-500/10"
-                  }`} />
+                  <div
+                    className={`absolute inset-0 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 -z-10 ${
+                      hasDiscount
+                        ? "bg-gradient-to-r from-red-500/10 to-orange-500/10"
+                        : "bg-gradient-to-r from-orange-500/10 to-red-500/10"
+                    }`}
+                  />
                 )}
               </div>
             );
           })}
       </div>
-        {hasMore ? (
-  <div className="flex justify-center items-center py-6 text-gray-500 gap-3">
-    <div className="w-6 h-6 border-4 border-gray-300 border-t-orange-500 rounded-full animate-spin"></div>
-    <span>Loading more foods...</span>
-  </div>
-) : (
-  <div className="flex justify-center py-6 text-gray-400">
-    No more items 🍽️
-  </div>
-)}
-
-
-      {/* Toast Container */}
-      <ToastContainer
-        position="top-right"
-        autoClose={3000}
-        hideProgressBar={false}
-        newestOnTop
-        closeOnClick
-        rtl={false}
-        pauseOnFocusLoss
-        draggable
-        pauseOnHover
-      />
     </div>
   );
 };

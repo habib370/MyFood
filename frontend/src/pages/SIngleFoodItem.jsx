@@ -2,10 +2,8 @@ import { useEffect, useState, useContext } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { StoreContext } from "../context/StoreContext.jsx";
-import { toast } from "react-toastify";
 import ThumbUpOffAltIcon from "@mui/icons-material/ThumbUpOffAlt";
 import ThumbDownOffAltIcon from "@mui/icons-material/ThumbDownOffAlt";
-import { VscUnverified } from "react-icons/vsc";
 import { VscVerifiedFilled } from "react-icons/vsc";
 import StarIcon from "@mui/icons-material/Star";
 import { FaChevronDown, FaChevronUp } from "react-icons/fa";
@@ -87,7 +85,7 @@ const calculateDiscountedPrice = (price, discount) => {
         setReplyCounts(counts);
       } catch (err) {
         console.error(err);
-        toast.error("Failed to fetch comments");
+        
       }
     };
     fetchComments();
@@ -95,7 +93,7 @@ const calculateDiscountedPrice = (price, discount) => {
 
   const handleAddComment = async () => {
     if (!isLoggedIn()) {
-      toast.error("Please log in first");
+     console.log("Please log in first");
       setShowLogInPopUp(true);
       return;
     }
@@ -107,7 +105,7 @@ const calculateDiscountedPrice = (price, discount) => {
         { headers: { token } }
       );
       if (res.data.ok) {
-        toast.success("Comment added!");
+        
         setComments((prev) => [...prev, res.data.comment]);
         // Initialize reply count for new comment
         setReplyCounts((prev) => ({
@@ -118,13 +116,13 @@ const calculateDiscountedPrice = (price, discount) => {
       }
     } catch (err) {
       console.error(err);
-      toast.error("Failed to add comment");
+     
     }
   };
 
   const handleAddToCart = (foodItemId) => {
     if (!isLoggedIn()) {
-      toast.error("Please log in first");
+     
       setShowLogInPopUp(true)
     } else {
       addToCart(foodItemId);
@@ -142,11 +140,11 @@ const calculateDiscountedPrice = (price, discount) => {
         setComments((prev) =>
           prev.map((c) => (c._id === commentId ? res.data.comment : c))
         );
-        toast.success("You liked this comment!");
+        
       }
     } catch (err) {
       console.error(err);
-      toast.error("Failed to like comment");
+     
     }
   };
 
@@ -161,11 +159,11 @@ const calculateDiscountedPrice = (price, discount) => {
         setComments((prev) =>
           prev.map((c) => (c._id === commentId ? res.data.comment : c))
         );
-        toast.success("You disliked this comment!");
+        
       }
     } catch (err) {
       console.error(err);
-      toast.error("Failed to dislike comment");
+      
     }
   };
 
@@ -190,13 +188,13 @@ const calculateDiscountedPrice = (price, discount) => {
       }
     } catch (err) {
       console.error(err);
-      toast.error("Failed to load replies");
+     
     }
   };
 
   const handleAddReply = async (commentId) => {
     if (!isLoggedIn()) {
-      toast.error("Please log in first");
+      console.log("Please log in first");
       setShowLogInPopUp(true);
       return;
     }
@@ -210,7 +208,7 @@ const calculateDiscountedPrice = (price, discount) => {
       );
 
       if (res.data.ok) {
-        toast.success("Reply added!");
+      
 
         // Update replies list
         setReplies((prev) => ({
@@ -229,7 +227,7 @@ const calculateDiscountedPrice = (price, discount) => {
       }
     } catch (err) {
       console.error(err);
-      toast.error("Failed to add reply");
+      console.log("Failed to add reply");
     }
   };
 
@@ -358,7 +356,7 @@ const calculateDiscountedPrice = (price, discount) => {
             toast.error("Please log in first");
             setShowLogInPopUp(true);
           } else if (!item.isAvailable) {
-            toast.error("This item is currently out of stock");
+           console.log("This item is currently out of stock");
           } else {
             addToCart(item._id);
             navigate("/order");
@@ -459,10 +457,10 @@ const calculateDiscountedPrice = (price, discount) => {
           <button
             onClick={() => {
               if (!isLoggedIn()) {
-                toast.error("Please log in first");
+               console.log("Please log in first");
                 setShowLogInPopUp(true);
               } else if (!item.isAvailable) {
-                toast.error("This item is currently out of stock");
+               console.log("This item is currently out of stock");
               } else {
                 handleAddToCart(item._id);
               }

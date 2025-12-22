@@ -2,9 +2,7 @@ import React, { useContext } from "react";
 import { assets } from "../assets/assets.js";
 import { StoreContext } from "../context/StoreContext.jsx";
 import axios from "axios";
-import { ToastContainer, toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
-import { FaEye, FaEyeSlash } from "react-icons/fa"; // Import from react-icons
+import { FaEye, FaEyeSlash } from "react-icons/fa";
 
 export const LoginPopup = () => {
   const [data, setData] = React.useState({
@@ -15,10 +13,9 @@ export const LoginPopup = () => {
   });
   const [isClose, setIsClose] = React.useState(false);
   const [isSignedIn, setIsSignedIn] = React.useState(false);
-  const [showPassword, setShowPassword] = React.useState(false); // New state for password visibility
-  const { url, setToken, setUser, showLogInPopUp, setShowLogInPopUp } = useContext(StoreContext);
-  let newUrl = url;
-  
+  const [showPassword, setShowPassword] = React.useState(false);
+  const { url, setToken, setUser, setShowLogInPopUp } =
+    useContext(StoreContext);
   const setAuth = async (e) => {
     e.preventDefault();
     const endpoint = isSignedIn ? "/api/user/login" : "/api/user/register";
@@ -29,9 +26,7 @@ export const LoginPopup = () => {
         localStorage.setItem("token", response.data.token);
         setIsClose(true);
         setShowLogInPopUp(false);
-        toast.success(response.data.message)
       } else {
-        toast.error(response.data.message)
         console.log(response.data.message);
       }
       setUser(response.data.user);
@@ -42,7 +37,7 @@ export const LoginPopup = () => {
   };
 
   if (isClose) return null; // Hide popup when closed
-  
+
   const handleChange = (e) => {
     setData({
       ...data,
