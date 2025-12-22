@@ -12,22 +12,55 @@ const StoreContextProvider = ({ children }) => {
 
    const url = "https://myfood-backend-fngt.onrender.com";
  // const url = "http://localhost:4000";
-  const [food_list, setFoodList] = useState([]);
+ const [food_list, setFoodList] = useState([]);
+const [page, setPage] = useState(1);
+const [hasMore, setHasMore] = useState(true);
+const LIMIT = 8;
 
-  const getAllFood = async () => {
-    const response = await axios.get(`${url}/api/food/list`);
-    if (response.data.ok) {
-      setFoodList(response.data.data);
+
+  // const getAllFood = async () => {
+  //   const response = await axios.get(`${url}/api/food/list`);
+  //   if (response.data.ok) {
+  //     setFoodList(response.data.data);
+  //   }
+  // };
+  const getAllFood = async (pageNumber = 1) => {
+  try {
+    if (!hasMore) return;
+
+    const res = await axios.get(
+      `${url}/api/food/list?page=${pageNumber}&limit=${LIMIT}`
+    );
+
+    if (res.data.data.length === 0) {
+      setHasMore(false);
+      return;
     }
-  };
+
+    setFoodList(prev => [...prev, ...res.data.data]);
+  } catch (error) {
+    console.error("Food fetch error:", error);
+  }
+};
+const loadMoreFoods = () => {
+  if (!hasMore) return;
+
+  const nextPage = page + 1;
+  setPage(nextPage);
+   getAllFood(nextPage);
+};
+
+
   // Load token & user from localStorage on app load
-  useEffect(() => {
-    getAllFood();
-    const savedToken = localStorage.getItem("token");
-    const savedUser = localStorage.getItem("user");
-    if (savedToken) setToken(savedToken);
-    if (savedUser) setUser(JSON.parse(savedUser));
-  }, []);
+ useEffect(() => {
+  getAllFood(1);
+
+  const savedToken = localStorage.getItem("token");
+  const savedUser = localStorage.getItem("user");
+  if (savedToken) setToken(savedToken);
+  if (savedUser) setUser(JSON.parse(savedUser));
+}, []);
+
 
   // Persist token & user whenever they change
   useEffect(() => {
@@ -151,6 +184,8 @@ const StoreContextProvider = ({ children }) => {
     showLogInPopUp,
     setShowLogInPopUp,
     food_list,
+    loadMoreFoods,
+    hasMore,
     cartItems,
     setCartItems,
     addToCart,

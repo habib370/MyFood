@@ -14,6 +14,8 @@ export const FoodDisplay = ({ category }) => {
   const navigate = useNavigate();
   const {
     food_list,
+    loadMoreFoods,
+    hasMore,
     cartItems,
     addToCart,
     deleteFromCart,
@@ -41,6 +43,19 @@ export const FoodDisplay = ({ category }) => {
       loadAllReviewCounts();
     }
   }, [food_list]);
+useEffect(() => {
+  const handleScroll = () => {
+    if (
+      window.innerHeight + document.documentElement.scrollTop + 100 >=
+      document.documentElement.scrollHeight
+    ) {
+      loadMoreFoods();
+    }
+  };
+
+  window.addEventListener("scroll", handleScroll);
+  return () => window.removeEventListener("scroll", handleScroll);
+}, [loadMoreFoods]);
 
   const handleAddToCart = (foodItem) => {
     if (!isLoggedIn()) {
@@ -398,50 +413,17 @@ export const FoodDisplay = ({ category }) => {
             );
           })}
       </div>
+        {hasMore ? (
+  <div className="flex justify-center items-center py-6 text-gray-500 gap-3">
+    <div className="w-6 h-6 border-4 border-gray-300 border-t-orange-500 rounded-full animate-spin"></div>
+    <span>Loading more foods...</span>
+  </div>
+) : (
+  <div className="flex justify-center py-6 text-gray-400">
+    No more items 🍽️
+  </div>
+)}
 
-      {/* Discount Summary */}
-      <div className="mt-8 p-6 bg-gradient-to-r from-red-50 to-orange-50 rounded-2xl border border-red-100">
-        <div className="flex flex-col md:flex-row justify-between items-center gap-4">
-          <div className="flex items-center gap-4">
-            <div className="flex items-center gap-2">
-              <FaTag className="text-red-500" />
-              <span className="text-red-700 font-medium">Special Discounts</span>
-            </div>
-            <div className="text-sm text-red-600">
-              {food_list.filter(item => item.discount && item.discount > 0).length} items on sale
-            </div>
-          </div>
-          <div className="text-gray-600">
-            <span className="font-bold text-red-600">
-              Up to {Math.max(...food_list.map(item => item.discount || 0))}% OFF
-            </span>{" "}
-            on selected items
-          </div>
-        </div>
-      </div>
-
-      {/* Stock Summary */}
-      <div className="mt-8 p-6 bg-gradient-to-r from-gray-50 to-gray-100 rounded-2xl border border-gray-200">
-        <div className="flex flex-col md:flex-row justify-between items-center gap-4">
-          <div className="flex items-center gap-4">
-            <div className="flex items-center gap-2">
-              <div className="w-4 h-4 bg-green-500 rounded-full"></div>
-              <span className="text-gray-700 font-medium">In Stock</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <div className="w-4 h-4 bg-red-500 rounded-full"></div>
-              <span className="text-gray-700 font-medium">Out of Stock</span>
-            </div>
-          </div>
-          <div className="text-gray-600">
-            Showing{" "}
-            <span className="font-bold text-orange-600">
-              {food_list.filter(item => item.isAvailable !== false).length}
-            </span>{" "}
-            available items out of {food_list.length}
-          </div>
-        </div>
-      </div>
 
       {/* Toast Container */}
       <ToastContainer
