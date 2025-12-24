@@ -1,5 +1,5 @@
 import express from 'express';
-import {addFood,listFood,deleteFoodItem,getSingleItem,searchItems,filterByCatagory} from '../controllers/foodController.js';
+import {addFood,listFood,deleteFoodItem,getSingleItem,searchItems,filterByCategory} from '../controllers/foodController.js';
 import multer from 'multer';
 
 const foodRouter=express.Router();
@@ -21,6 +21,6 @@ foodRouter.get('/list',listFood)
 foodRouter.post('/remove',deleteFoodItem);
 foodRouter.get('/single-item/:itemId',getSingleItem)
 foodRouter.get('/search',searchItems);
-foodRouter.get('/category/:itemId',filterByCatagory)
+foodRouter.get('/category/:itemId',filterByCategory)
 
 export default foodRouter;
