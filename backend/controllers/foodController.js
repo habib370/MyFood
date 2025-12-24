@@ -151,7 +151,7 @@ export const searchItems= async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 };
-const filterByCategory = async (req, res) => {
+export const filterByCategory = async (req, res) => {
   try {
     // Find the item by its ID from params
     const uniqueItem = await foodModel.findById(req.params.itemId);
