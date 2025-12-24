@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { TbCurrencyTaka } from "react-icons/tb";
 import { FaTag } from "react-icons/fa";
-
+import { IoAlert } from "react-icons/io5";
 export const PlaceOrder = () => {
   const { food_list, cartItems, removeAllFromCart, url, token } =
     useContext(StoreContext);
@@ -18,7 +18,7 @@ export const PlaceOrder = () => {
     street: "",
     extraInfo: "",
   });
-
+const [alert,setAlert]=React.useState("")
   // Calculate discounted price
   const calculateDiscountedPrice = (price, discount) => {
     if (!discount || discount <= 0) return price;
@@ -69,6 +69,7 @@ export const PlaceOrder = () => {
     // Validate required fields
     const { fullname, email, city, street } = formData;
     if (!fullname || !email || !city || !street) {
+      setAlert("Please fill in all required address fields")
      console.log("Please fill in all required address fields!");
       return;
     }
@@ -107,6 +108,7 @@ export const PlaceOrder = () => {
        
         navigate("/delivery");
       } else {
+        setAlert(response.data.message)
         console.log(response.data.message);
       }
     } catch (error) {
@@ -333,6 +335,7 @@ export const PlaceOrder = () => {
                 <hr className="border-gray-300" />
 
                 {/* Grand Total */}
+               
                 <div className="flex justify-between items-center text-lg font-bold">
                   <span className="text-gray-800">Grand Total:</span>
                   <div className="text-orange-600 text-xl flex items-center">
@@ -361,7 +364,16 @@ export const PlaceOrder = () => {
                   </p>
                 </div>
               )}
-
+                {
+                               alert!="" &&
+                               <div className="flex items-center gap-x-1 mt-2"> 
+                                 <IoAlert className="text-red-500"/>
+                                  <p className="text-red-500 text-sm">
+                              {alert}
+                             </p>
+                                 </div>
+                             
+                             }
               {/* Checkout Button */}
               <button
                 onClick={handleSubmit}

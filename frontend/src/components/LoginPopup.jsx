@@ -3,6 +3,7 @@ import { assets } from "../assets/assets.js";
 import { StoreContext } from "../context/StoreContext.jsx";
 import axios from "axios";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
+import { IoAlert } from "react-icons/io5";
 
 export const LoginPopup = () => {
   const [data, setData] = React.useState({
@@ -14,6 +15,7 @@ export const LoginPopup = () => {
   const [isClose, setIsClose] = React.useState(false);
   const [isSignedIn, setIsSignedIn] = React.useState(false);
   const [showPassword, setShowPassword] = React.useState(false);
+  const [alert,setAlert]=React.useState("")
   const { url, setToken, setUser, setShowLogInPopUp } =
     useContext(StoreContext);
   const setAuth = async (e) => {
@@ -28,6 +30,7 @@ export const LoginPopup = () => {
         setShowLogInPopUp(false);
       } else {
         console.log(response.data.message);
+        setAlert(response.data.message)
       }
       setUser(response.data.user);
       console.log(data);
@@ -130,7 +133,7 @@ export const LoginPopup = () => {
           </div>
 
           {/* Password field with eye icon */}
-          <div className="flex flex-col gap-2">
+          <div className="flex flex-col ">
             <label className="text-sm font-medium text-gray-700">
               Password
             </label>
@@ -144,6 +147,17 @@ export const LoginPopup = () => {
                 required
                 placeholder="••••••••"
               />
+              {
+                alert!="" &&
+                <div className="flex items-center gap-x-1 mt-2"> 
+                  <IoAlert className="text-red-500"/>
+                   <p className="text-red-500 text-sm">
+               {alert}
+              </p>
+                  </div>
+              
+              }
+             
               <button
                 type="button"
                 className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-gray-700 focus:outline-none"

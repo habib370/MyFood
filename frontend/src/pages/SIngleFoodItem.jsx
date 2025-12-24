@@ -24,7 +24,6 @@ export const SingleFoodItem = () => {
     cartItems,
     isLoggedIn,
     url,
-    showLogInPopUp,
     setShowLogInPopUp,
   } = useContext(StoreContext);
   const [similarItems, setSimilarItems] = useState([]);
@@ -800,7 +799,7 @@ const calculateDiscountedPrice = (price, discount) => {
         const isAvailable = simItem.isAvailable !== false;
         const hasDiscount = Number(simItem.discount) > 0;
         const originalPrice = parseFloat(simItem.price);
-        const discountPercentage = simItem.discount || 0;
+        const discountPercentage = Number(simItem.discount) || 0;
         const discountedPrice = hasDiscount
           ? calculateDiscountedPrice(originalPrice, discountPercentage)
           : originalPrice;

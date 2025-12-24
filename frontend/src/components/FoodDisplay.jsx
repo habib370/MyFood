@@ -63,7 +63,7 @@ export const FoodDisplay = () => {
 
   const handleAddToCart = (foodItem) => {
     if (!isLoggedIn()) {
-      toast.error("Please log in first");
+  
       setShowLogInPopUp(true);
     } else {
      
