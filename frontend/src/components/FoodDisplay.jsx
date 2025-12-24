@@ -9,7 +9,7 @@ import { FoodDisplaySkelton } from "./FoodDisplaySkelton.jsx";
 import { GiEmptyHourglass } from "react-icons/gi";
 import { FaCheckCircle, FaTag } from "react-icons/fa";
 
-export const FoodDisplay = ({ category }) => {
+export const FoodDisplay = () => {
   const navigate = useNavigate();
   const {
     food_list,
@@ -21,6 +21,7 @@ export const FoodDisplay = ({ category }) => {
     setShowLogInPopUp,
     loadMore,
     hasMore,
+    category
   } = useContext(StoreContext);
 
   const [reviewCount, setReviewCounts] = React.useState({});
@@ -158,7 +159,7 @@ export const FoodDisplay = ({ category }) => {
                 </div>
 
                 {/* Image Container with Overlay for Out of Stock */}
-                <div className="relative w-full h-48 mb-4 rounded-xl overflow-hidden">
+                <div className="relative w-full h-60  rounded-xl overflow-hidden">
                   <Link to={`/item/${foodItem._id}`}>
                     <img
                       src={foodItem.imageUrl}

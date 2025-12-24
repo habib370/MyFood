@@ -1,6 +1,7 @@
 import React from "react";
 import { assets } from "../assets/assets.js";
 import { Logo } from "../components/Logo.jsx";
+import {Link} from 'react-router-dom'
 export const Footer = () => {
   const currentYear = new Date().getFullYear();
 
@@ -66,32 +67,14 @@ export const Footer = () => {
           </div>
 
           {/* Company Links */}
-          <div className="lg:col-span-1">
+          <div className="flex flex-col gap-y-2">
             <h3 className="font-bold text-lg mb-6 relative inline-block">
               Company
-              <span className="absolute bottom-0 left-0 w-1/2 h-0.5 bg-orange-500 transform -translate-y-1"></span>
             </h3>
-            <ul className="space-y-3">
-              {[
-                "Home",
-                "About Us",
-                "Our Menu",
-                "Delivery Areas",
-                "Careers",
-                "Privacy Policy",
-                "Terms of Service",
-              ].map((item, index) => (
-                <li key={index}>
-                  <a
-                    href="#"
-                    className="text-gray-300 hover:text-orange-400 transition-all duration-300 flex items-center group"
-                  >
-                    <span className="w-1 h-1 bg-orange-500 rounded-full mr-3 opacity-0 group-hover:opacity-100 transition-opacity"></span>
-                    {item}
-                  </a>
-                </li>
-              ))}
-            </ul>
+            <Link to="/about-us" className="hover:text-orange-500 w-20 cursor-pointer">About us</Link>
+            <Link to="/return-policy" className="hover:text-orange-500 w-50 cursor-pointer">Return & Refund Policy</Link>
+         
+        
           </div>
 
           {/* Get in Touch */}

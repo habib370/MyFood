@@ -130,232 +130,232 @@ export const menu_list = [
 export const food_list = [
     {
         _id: "1",
-        name: "Greek salad",
+        name: "Mediterranean Delight Bowl",
         image: food_1,
         price: 12,
-        description: "Crisp cucumbers, juicy tomatoes, briny Kalamata olives, and creamy feta cheese tossed in herb-infused olive oil",
+        description: "Fresh cucumbers, ripe tomatoes, kalamata olives and feta cheese with herb olive oil dressing",
         category: "Salad"
     },
     {
         _id: "2",
-        name: "Veg salad",
+        name: "Garden Fresh Salad",
         image: food_2,
         price: 18,
-        description: "Fresh garden vegetables including bell peppers, carrots, and radishes over mixed greens with tangy vinaigrette",
+        description: "Colorful bell peppers, carrots, radishes and mixed greens with tangy vinaigrette",
         category: "Salad"
     }, {
         _id: "3",
-        name: "Clover Salad",
+        name: "Spring Garden Salad",
         image: food_3,
         price: 16,
-        description: "Tender baby greens with edible flowers, micro herbs, and a light citrus dressing for a delicate flavor",
+        description: "Young greens with fresh herbs and light citrus dressing",
         category: "Salad"
     }, {
         _id: "4",
-        name: "Chicken Salad",
+        name: "Grilled Chicken Caesar",
         image: food_4,
         price: 24,
-        description: "Grilled herb-marinated chicken breast sliced over crisp romaine with cherry tomatoes and Parmesan shavings",
+        description: "Herb-marinated chicken with romaine lettuce, cherry tomatoes and parmesan",
         category: "Salad"
     }, {
         _id: "5",
-        name: "Lasagna Rolls",
+        name: "Italian Lasagna Rolls",
         image: food_5,
         price: 14,
-        description: "Pasta sheets rolled with ricotta, spinach, and herbs, baked in rich marinara sauce with melted mozzarella",
+        description: "Pasta rolls with ricotta and spinach in tomato sauce with melted cheese",
         category: "Rolls"
     }, {
         _id: "6",
-        name: "Peri Peri Rolls",
+        name: "Spicy Peri Peri Wraps",
         image: food_6,
         price: 12,
-        description: "Spicy peri peri marinated vegetables wrapped in flatbread with cooling yogurt dip and fresh herbs",
+        description: "Spicy vegetable wraps with yogurt sauce and fresh herbs",
         category: "Rolls"
     }, {
         _id: "7",
-        name: "Chicken Rolls",
+        name: "BBQ Chicken Wraps",
         image: food_7,
         price: 20,
-        description: "Tender shredded chicken with sautéed onions and peppers, rolled in warm tortilla with special sauce",
+        description: "Shredded chicken with peppers and onions in warm tortilla with special sauce",
         category: "Rolls"
     }, {
         _id: "8",
-        name: "Veg Rolls",
+        name: "Asian Vegetable Rolls",
         image: food_8,
         price: 15,
-        description: "Crispy spring rolls filled with cabbage, carrots, beansprouts, and aromatic Asian seasonings",
+        description: "Crispy spring rolls with cabbage, carrots and bean sprouts",
         category: "Rolls"
     }, {
         _id: "9",
-        name: "Ripple Ice Cream",
+        name: "Chocolate Swirl Ice Cream",
         image: food_9,
         price: 14,
-        description: "Velvety vanilla ice cream swirled with ribbons of rich chocolate fudge and caramel sauce",
+        description: "Vanilla ice cream with chocolate and caramel swirls",
         category: "Deserts"
     }, {
         _id: "10",
-        name: "Fruit Ice Cream",
+        name: "Tropical Fruit Ice Cream",
         image: food_10,
         price: 22,
-        description: "Creamy fruit-infused ice cream bursting with chunks of fresh strawberries, peaches, and mango",
+        description: "Creamy ice cream with strawberries, peaches and mango pieces",
         category: "Deserts"
     }, {
         _id: "11",
-        name: "Jar Ice Cream",
+        name: "Artisanal Jar Dessert",
         image: food_11,
         price: 10,
-        description: "Artisanal small-batch ice cream served in charming mason jars with homemade cookie garnish",
+        description: "Homemade ice cream in mason jar with cookie topping",
         category: "Deserts"
     }, {
         _id: "12",
-        name: "Vanilla Ice Cream",
+        name: "Classic Vanilla Bean",
         image: food_12,
         price: 12,
-        description: "Classic Madagascar vanilla bean ice cream with real vanilla specks and rich, creamy texture",
+        description: "Rich vanilla ice cream with real vanilla bean specks",
         category: "Deserts"
     },
     {
         _id: "13",
-        name: "Chicken Sandwich",
+        name: "Club Chicken Sandwich",
         image: food_13,
         price: 12,
-        description: "Grilled chicken breast with avocado, bacon, lettuce, tomato, and garlic aioli on artisan bread",
+        description: "Grilled chicken with bacon, avocado and garlic sauce on artisan bread",
         category: "Sandwich"
     },
     {
         _id: "14",
-        name: "Vegan Sandwich",
+        name: "Mushroom Veggie Sandwich",
         image: food_14,
         price: 18,
-        description: "Grilled portobello mushrooms with hummus, roasted peppers, arugula, and vegan pesto on multigrain bread",
+        description: "Grilled portobello mushrooms with hummus and pesto on multigrain",
         category: "Sandwich"
     }, {
         _id: "15",
-        name: "Grilled Sandwich",
+        name: "Three Cheese Panini",
         image: food_15,
         price: 16,
-        description: "Three-cheese blend with tomatoes and basil pesto, grilled to golden perfection with crispy exterior",
+        description: "Melted cheese blend with tomatoes and pesto grilled to perfection",
         category: "Sandwich"
     }, {
         _id: "16",
-        name: "Bread Sandwich",
+        name: "Deluxe Sub Sandwich",
         image: food_16,
         price: 24,
-        description: "Artisan bread stuffed with layers of premium meats, cheeses, and fresh vegetables with signature spread",
+        description: "Artisan bread with premium meats, cheeses and fresh vegetables",
         category: "Sandwich"
     }, {
         _id: "17",
-        name: "Cup Cake",
+        name: "Vanilla Frosted Cupcake",
         image: food_17,
         price: 14,
-        description: "Moist vanilla cupcake with fluffy buttercream frosting and decorative sprinkles for a sweet treat",
+        description: "Moist vanilla cupcake with buttercream frosting and sprinkles",
         category: "Cake"
     }, {
         _id: "18",
-        name: "Vegan Cake",
+        name: "Chocolate Vegan Delight",
         image: food_18,
         price: 12,
-        description: "Rich chocolate cake made without animal products, topped with dairy-free chocolate ganache",
+        description: "Rich chocolate cake with dairy-free chocolate topping",
         category: "Cake"
     }, {
         _id: "19",
-        name: "Butterscotch Cake",
+        name: "Caramel Butterscotch Cake",
         image: food_19,
         price: 20,
-        description: "Layered sponge cake with creamy butterscotch filling and caramel drizzle decoration",
+        description: "Layered cake with butterscotch filling and caramel drizzle",
         category: "Cake"
     }, {
         _id: "20",
-        name: "Sliced Cake",
+        name: "Red Velvet Slice",
         image: food_20,
         price: 15,
-        description: "Generous slice of red velvet cake with cream cheese frosting and walnut pieces",
+        description: "Slice of red velvet cake with cream cheese frosting and walnuts",
         category: "Cake"
     }, {
         _id: "21",
-        name: "Garlic Mushroom",
+        name: "Garlic Butter Mushrooms",
         image: food_21,
         price: 14,
-        description: "Sautéed mushrooms in garlic butter sauce with fresh parsley and a touch of white wine",
+        description: "Sautéed mushrooms in garlic butter with parsley",
         category: "Pure Veg"
     }, {
         _id: "22",
-        name: "Fried Cauliflower",
+        name: "Crispy Cauliflower Bites",
         image: food_22,
         price: 22,
-        description: "Crispy golden-brown cauliflower florets with spicy dipping sauce and lemon wedge garnish",
+        description: "Golden fried cauliflower with spicy dipping sauce",
         category: "Pure Veg"
     }, {
         _id: "23",
-        name: "Mix Veg Pulao",
+        name: "Vegetable Biryani",
         image: food_23,
         price: 10,
-        description: "Fragrant basmati rice cooked with mixed vegetables and aromatic Indian spices",
+        description: "Fragrant rice with mixed vegetables and Indian spices",
         category: "Pure Veg"
     }, {
         _id: "24",
-        name: "Rice Zucchini",
+        name: "Herbed Zucchini Rice",
         image: food_24,
         price: 12,
-        description: "Sautéed zucchini ribbons with herbs over steamed rice with Parmesan cheese sprinkle",
+        description: "Sautéed zucchini with herbs over rice with parmesan",
         category: "Pure Veg"
     },
     {
         _id: "25",
-        name: "Cheese Pasta",
+        name: "Four Cheese Pasta",
         image: food_25,
         price: 12,
-        description: "Al dente pasta tossed in four-cheese sauce with herbs and cracked black pepper",
+        description: "Pasta in creamy cheese sauce with herbs and pepper",
         category: "Pasta"
     },
     {
         _id: "26",
-        name: "Tomato Pasta",
+        name: "Fresh Tomato Basil Pasta",
         image: food_26,
         price: 18,
-        description: "Classic pasta with fresh tomato basil sauce, garlic, and extra virgin olive oil",
+        description: "Pasta with tomato basil sauce, garlic and olive oil",
         category: "Pasta"
     }, {
         _id: "27",
-        name: "Creamy Pasta",
+        name: "Creamy Alfredo Fettuccine",
         image: food_27,
         price: 16,
-        description: "Fettuccine in rich Alfredo sauce with mushrooms and a sprinkle of parsley",
+        description: "Fettuccine in Alfredo sauce with mushrooms",
         category: "Pasta"
     }, {
         _id: "28",
-        name: "Chicken Pasta",
+        name: "Creamy Chicken Penne",
         image: food_28,
         price: 24,
-        description: "Penne pasta with grilled chicken strips in creamy tomato sauce with Italian herbs",
+        description: "Penne pasta with chicken in creamy tomato sauce",
         category: "Pasta"
     }, {
         _id: "29",
-        name: "Butter Noodles",
+        name: "Garlic Butter Noodles",
         image: food_29,
         price: 14,
-        description: "Soft egg noodles tossed in garlic butter with fresh herbs and sesame seeds",
+        description: "Egg noodles in garlic butter with herbs",
         category: "Noodles"
     }, {
         _id: "30",
-        name: "Veg Noodles",
+        name: "Stir-fried Vegetable Noodles",
         image: food_30,
         price: 12,
-        description: "Stir-fried noodles with colorful vegetables in light soy-ginger sauce",
+        description: "Noodles with colorful vegetables in soy-ginger sauce",
         category: "Noodles"
     }, {
         _id: "31",
-        name: "Somen Noodles",
+        name: "Chilled Japanese Noodles",
         image: food_31,
         price: 20,
-        description: "Thin Japanese wheat noodles served chilled with dipping sauce and green onions",
+        description: "Thin wheat noodles served cold with dipping sauce",
         category: "Noodles"
     }, {
         _id: "32",
-        name: "Cooked Noodles",
+        name: "Vegetable Stir-fry Noodles",
         image: food_32,
         price: 15,
-        description: "Stir-fried noodles with mixed vegetables in savory sauce, topped with fried shallots",
+        description: "Fried noodles with mixed vegetables in savory sauce",
         category: "Noodles"
     }
 ]

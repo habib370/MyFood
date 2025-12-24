@@ -29,8 +29,6 @@ export const Navbar = () => {
     0
   );
 
-  const menuItems = ["home", "help", "contact", "about us"];
-
   // Load recent searches from localStorage and fetch categories from backend
   useEffect(() => {
     const savedSearches = localStorage.getItem("recentSearches");
@@ -176,7 +174,7 @@ export const Navbar = () => {
   return (
     <>
       <nav className="bg-white shadow-lg border-b border-gray-100 sticky top-0 z-50">
-        <div className="max-w-screen-xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="max-w-screen mx-auto px-4 sm:px-6 lg:px-8">
           {/* Top Row with Logo, Search, and User Actions */}
           <div className="flex items-center justify-between h-16">
             {/* Logo */}
