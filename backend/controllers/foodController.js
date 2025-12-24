@@ -151,4 +151,28 @@ export const searchItems= async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 };
+const filterByCategory = async (req, res) => {
+  try {
+    // Find the item by its ID from params
+    const uniqueItem = await foodModel.findById(req.params.itemId);
 
+    if (!uniqueItem) {
+      return res.status(404).json({ ok: false, message: "Item not found" });
+    }
+
+    const category = uniqueItem.category;
+
+    // Find all items with the same category, excluding the original item
+    const allSimilarItems = await foodModel.find({
+      category: category,
+      _id: { $ne: uniqueItem._id } // exclude the given item
+    });
+
+    return res.json({ ok: true, items: allSimilarItems });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ ok: false, message: error.message });
+  }
+};
+
+export default filterByCategory;

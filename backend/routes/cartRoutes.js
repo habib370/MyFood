@@ -8,4 +8,5 @@ cartRouter.post('/add',authMiddleWare,addToCart);
 cartRouter.post('/remove',authMiddleWare,removeFromCart);
 cartRouter.get('/get',authMiddleWare,getAllCartItems)
 cartRouter.post('/deleteAll',authMiddleWare,removeALlItems)
+cartRouter.post('/deleteAll',authMiddleWare,removeALlItems)
 export default cartRouter;
