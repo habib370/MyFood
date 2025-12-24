@@ -85,7 +85,7 @@ export const UserProfile = () => {
 
             <button className="w-full text-left px-4 py-2.5 text-sm text-gray-700 hover:bg-orange-50 hover:text-orange-600 transition-colors duration-200 flex items-center gap-3">
               <span className="text-base">⚙️</span>
-              <span>Settings</span>
+              <Link to="/edit-profile">Settings</Link>
             </button>
 
             {/* Divider */}
