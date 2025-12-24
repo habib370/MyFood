@@ -18,6 +18,7 @@ import { Slide } from 'react-toastify';
 import ReturnPolicy from './pages/ReturnPolicy.jsx'
 import AboutUs from './pages/AboutUs.jsx'
 import { ExploreMenu } from "./components/ExploreMenu.jsx";
+import ScrollToTop from './components/ScrollToTop.jsx'
 function App() {
   
   const { showLogInPopUp, setShowLogInPopUp } = useContext(StoreContext);
@@ -81,6 +82,7 @@ function App() {
           <Route path="/return-policy" element={<ReturnPolicy />} />
            <Route path="/about-us" element={<AboutUs />} />
         </Routes>
+        <ScrollToTop/>
       </main>
 
       <Footer />
