@@ -9,7 +9,7 @@ const foodSchema = new mongoose.Schema({
   imageId: { type: String, required: true },  
   isAvailable:{type:Boolean,default:true},
   discount:{type:Number,default:0}
-},);
+},{timestamps:true});
 foodSchema.index({
   name: "text",
   category: "text",
