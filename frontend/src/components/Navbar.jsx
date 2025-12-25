@@ -178,7 +178,7 @@ export const Navbar = () => {
           {/* Top Row with Logo, Search, and User Actions */}
           <div className="flex items-center justify-between h-16">
             {/* Logo */}
-            <Link to="/" className="flex-shrink-0">
+            <Link to="/"  onClick={() => window.scrollTo(0, 0)} className="flex-shrink-0">
               <Logo />
             </Link>
 
@@ -214,6 +214,7 @@ export const Navbar = () => {
               {/* Cart */}
               <Link
                 to="/cart"
+                 onClick={() => window.scrollTo(0, 0)}
                 className="relative p-2 rounded-full hover:bg-gray-100 transition-colors duration-200"
               >
                 <ShoppingCartIcon className="text-gray-600" />

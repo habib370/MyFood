@@ -160,7 +160,7 @@ export const FoodDisplay = () => {
 
                 {/* Image Container with Overlay for Out of Stock */}
                 <div className="relative w-full h-60  rounded-xl overflow-hidden">
-                  <Link to={`/item/${foodItem._id}`}>
+                  <Link to={`/item/${foodItem._id}`}  onClick={() => window.scrollTo(0, 0)}>
                     <img
                       src={foodItem.imageUrl}
                       alt={foodItem.name}

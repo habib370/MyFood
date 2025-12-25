@@ -71,8 +71,8 @@ export const Footer = () => {
             <h3 className="font-bold text-lg mb-6 relative inline-block">
               Company
             </h3>
-            <Link to="/about-us" className="hover:text-orange-500 w-20 cursor-pointer">About us</Link>
-            <Link to="/return-policy" className="hover:text-orange-500 w-50 cursor-pointer">Return & Refund Policy</Link>
+            <Link to="/about-us"  onClick={() => window.scrollTo(0, 0)} className="hover:text-orange-500 w-20 cursor-pointer">About us</Link>
+            <Link to="/return-policy"  onClick={() => window.scrollTo(0, 0)} className="hover:text-orange-500 w-50 cursor-pointer">Return & Refund Policy</Link>
          
         
           </div>

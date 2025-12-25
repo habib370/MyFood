@@ -814,7 +814,7 @@ const calculateDiscountedPrice = (price, discount) => {
               animate-fadeIn relative
               ${!isAvailable ? "opacity-80" : ""}
             `}
-            onClick={() => navigate(`/item/${simItem._id}`)}
+            onClick={() =>{ navigate(`/item/${simItem._id}`);window.scrollTo(0,0)}}
           >
             {/* Discount Badge - Top Left Corner */}
             {hasDiscount && isAvailable && (

@@ -68,24 +68,24 @@ export const UserProfile = () => {
 
           {/* Menu items */}
           <div className="py-2">
-            <Link to="/my-orders" className="w-full text-left px-4 py-2.5 text-sm text-gray-700 hover:bg-orange-50 hover:text-orange-600 transition-colors duration-200 flex items-center gap-3">
+            <Link to="/my-orders"  onClick={() => window.scrollTo(0, 0)} className="w-full text-left px-4 py-2.5 text-sm text-gray-700 hover:bg-orange-50 hover:text-orange-600 transition-colors duration-200 flex items-center gap-3">
               <span className="text-base">🍽️</span>
               <span>My Orders</span>
             </Link>
 
             <button className="w-full text-left px-4 py-2.5 text-sm text-gray-700 hover:bg-orange-50 hover:text-orange-600 transition-colors duration-200 flex items-center gap-3">
               <span className="text-base">🛒</span>
-              <button onClick={()=>navigate('/delivery')}>Track Order</button>
+              <button onClick={()=>{navigate('/delivery');window.scrollTo(0, 0)}}>Track Order</button>
             </button>
 
             <button className="w-full text-left px-4 py-2.5 text-sm text-gray-700 hover:bg-orange-50 hover:text-orange-600 transition-colors duration-200 flex items-center gap-3">
               <span className="text-base">👤</span>
-            <Link to={'/profile'}>Profile</Link>
+            <Link to={'/profile'} onClick={() => window.scrollTo(0, 0)}>Profile</Link>
             </button>
 
             <button className="w-full text-left px-4 py-2.5 text-sm text-gray-700 hover:bg-orange-50 hover:text-orange-600 transition-colors duration-200 flex items-center gap-3">
               <span className="text-base">⚙️</span>
-              <Link to="/edit-profile">Settings</Link>
+              <Link to="/edit-profile" onClick={() => window.scrollTo(0, 0)}>Settings</Link>
             </button>
 
             {/* Divider */}

@@ -125,16 +125,16 @@ const AboutUs = () => {
         <div className="relative z-20 h-full flex flex-col justify-center items-center text-white px-4">
           <div className="max-w-6xl mx-auto text-center">
             <h1 className="text-5xl md:text-7xl font-bold mb-6 leading-tight">
-              Welcome to <span className="text-yellow-400">goriber bazar</span>
+              Welcome to <span className="text-yellow-400">My Food</span>
             </h1>
             <p className="text-xl md:text-2xl mb-8 text-gray-200 max-w-3xl mx-auto">
               Bangladesh's most trusted online marketplace, connecting millions to quality products with convenience and care
             </p>
             <div className="flex flex-wrap justify-center gap-4">
-              <Link to="/" className="px-8 py-3 bg-yellow-500 text-gray-900 font-semibold rounded-full hover:bg-yellow-600 transition-all transform hover:scale-105 shadow-lg">
+              <Link to="/" onClick={() => window.scrollTo(0, 0)} className="px-8 py-3 bg-yellow-500 text-gray-900 font-semibold rounded-full hover:bg-yellow-600 transition-all transform hover:scale-105 shadow-lg">
                 Shop Now
               </Link>
-              <button className="px-8 py-3 border-2 border-white text-white font-semibold rounded-full hover:bg-white/10 transition-all shadow-lg">
+              <button onClick={()=>alert("goriber story hoi na re paglaa")} className="px-8 py-3 border-2 border-white text-white font-semibold rounded-full hover:bg-white/10 transition-all shadow-lg">
                 Our Story
               </button>
             </div>
@@ -157,7 +157,7 @@ const AboutUs = () => {
               Our <span className="text-blue-600">Story</span>
             </h2>
             <p className="text-gray-700 text-lg mb-6">
-              Founded in 2018, goriber bazar began with a simple vision: to make shopping accessible, 
+              Founded in 2018, My Food began with a simple vision: to make shopping accessible, 
               convenient, and trustworthy for every Bangladeshi household. What started as a small 
               online grocery service has grown into a comprehensive marketplace serving millions.
             </p>
@@ -233,7 +233,7 @@ const AboutUs = () => {
             Our <span className="text-blue-600">Core Values</span>
           </h2>
           <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-            The principles that guide every decision we make at goriber bazar
+            The principles that guide every decision we make at My Food
           </p>
         </div>
         <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
@@ -258,7 +258,7 @@ const AboutUs = () => {
               Meet Our <span className="text-blue-600">Leadership</span>
             </h2>
             <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-              The passionate team behind goriber bazar's success story
+              The passionate team behind My Food's success story
             </p>
           </div>
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
@@ -291,7 +291,7 @@ const AboutUs = () => {
           <h2 className="text-4xl font-bold text-gray-900 mb-4">
             Our <span className="text-blue-600">Journey</span>
           </h2>
-          <p className="text-xl text-gray-600">Milestones that shaped goriber bazar</p>
+          <p className="text-xl text-gray-600">Milestones that shaped My Food</p>
         </div>
         <div className="relative">
           {/* Timeline line */}
@@ -323,7 +323,7 @@ const AboutUs = () => {
       <section className="py-20 px-4 bg-gradient-to-r from-blue-600 to-purple-600 text-white">
         <div className="max-w-6xl mx-auto">
           <div className="text-center mb-16">
-            <h2 className="text-4xl font-bold mb-4">Why Choose goriber bazar?</h2>
+            <h2 className="text-4xl font-bold mb-4">Why Choose My Food?</h2>
             <p className="text-xl text-blue-100">Experience shopping like never before</p>
           </div>
           <div className="grid md:grid-cols-3 gap-8">
@@ -409,8 +409,8 @@ const AboutUs = () => {
                 <FaEnvelope className="text-2xl" />
               </div>
               <h3 className="text-xl font-bold mb-4">Email Us</h3>
-              <p className="text-gray-600 mb-2">support@goriber bazar.com</p>
-              <p className="text-gray-600">info@goriber bazar.com</p>
+              <p className="text-gray-600 mb-2">support@My Food.com</p>
+              <p className="text-gray-600">info@My Food.com</p>
             </div>
             <div className="bg-white p-8 rounded-2xl shadow-lg text-center">
               <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-purple-100 text-purple-600 mb-6">
@@ -427,7 +427,7 @@ const AboutUs = () => {
       {/* CTA Section */}
       <section className="py-16 px-4 bg-gradient-to-r from-yellow-400 to-orange-500 text-gray-900">
         <div className="max-w-4xl mx-auto text-center">
-          <h2 className="text-4xl font-bold mb-6">Ready to Experience goriber bazar?</h2>
+          <h2 className="text-4xl font-bold mb-6">Ready to Experience My Food?</h2>
           <p className="text-xl mb-8 max-w-2xl mx-auto">
             Join millions of satisfied customers who trust us for their daily needs
           </p>
@@ -435,7 +435,7 @@ const AboutUs = () => {
             <button onClick={()=>alert("goriber abr app hoi na re pagla")} className="px-8 py-3 bg-gray-900 text-white font-semibold rounded-full hover:bg-black transition-all transform hover:scale-105 shadow-lg">
               Download Our App
             </button>
-            <Link to='/' className="px-8 py-3 bg-white text-gray-900 font-semibold rounded-full hover:bg-gray-100 transition-all shadow-lg">
+            <Link to='/' onClick={() => window.scrollTo(0, 0)} className="px-8 py-3 bg-white text-gray-900 font-semibold rounded-full hover:bg-gray-100 transition-all shadow-lg">
               Explore Products
             </Link>
             <button className="px-8 py-3 border-2 border-gray-900 text-gray-900 font-semibold rounded-full hover:bg-gray-900/10 transition-all shadow-lg">
