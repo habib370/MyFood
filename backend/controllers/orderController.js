@@ -1,5 +1,6 @@
 import orderModel from "../models/orderModel.js";
 import userModel from "../models/userModel.js";
+import reviewModel from '../models/reviewModel.js'
 import stripe from "stripe";
 
 //placing user order from frontend
@@ -92,4 +93,29 @@ export const userOrderList=async(req,res)=>{
  } catch (error) {
   res.json({ok:false,message:error.message})
  }
+}
+export const userReviewOnItem=async(req,res)=>{
+  try {
+    const{itemId,rating,comment}=req.body;
+    if(!itemId){
+      return res.json({ok:false,message:"itemId not found"})
+    }
+    const userId=req.userId;
+    const checkUser=await userModel.findById(userId);
+    if(!checkUser){
+      return res.json({ok:false,message:"user not found"});
+    }
+  
+    const newReview=new reviewModel({
+      userId,
+      itemId,
+      rating,
+      comment
+    })
+    const review=await newReview.save();
+    return res.json({ok:true,review})
+  } catch (error) {
+    res.json({ok:false,message:error.message});
+    console.log(error)
+  }
 }
