@@ -96,7 +96,7 @@ export const userOrderList=async(req,res)=>{
 }
 export const userReviewOnItem=async(req,res)=>{
   try {
-    const{itemId,rating,comment}=req.body;
+    const{itemId,rating}=req.body;
     if(!itemId){
       return res.json({ok:false,message:"itemId not found"})
     }
@@ -105,12 +105,20 @@ export const userReviewOnItem=async(req,res)=>{
     if(!checkUser){
       return res.json({ok:false,message:"user not found"});
     }
-  
+     
+     const existingReview = await reviewModel.findOne({
+      userId,
+      itemId,
+    });
+    if(existingReview){
+      existingReview.rating=rating;
+      await existingReview.save();
+      return res.json({ok:true,message:"reviewed changed!"})
+    }
     const newReview=new reviewModel({
       userId,
       itemId,
       rating,
-      comment
     })
     const review=await newReview.save();
     return res.json({ok:true,review})
