@@ -18,6 +18,7 @@ export const PlaceOrder = () => {
     street: "",
     extraInfo: "",
   });
+ 
 const [alert,setAlert]=React.useState("")
   // Calculate discounted price
   const calculateDiscountedPrice = (price, discount) => {
@@ -116,7 +117,14 @@ const [alert,setAlert]=React.useState("")
       console.log(error);
     }
   };
+  const loading = !food_list || food_list.length === 0;
 
+if (loading)
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-orange-500"></div>
+      </div>
+    );
   return (
     <div className="min-h-screen bg-gray-50 py-8">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 ">

@@ -36,7 +36,14 @@ export const Cart = () => {
   }, 0);
 
   const deliveryFee = totalPrice > 0 ? 5 : 0;
+ const loading = !food_list || food_list.length === 0;
 
+if (loading)
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-orange-500"></div>
+      </div>
+    );
   return (
     <div className="flex flex-col p-4 sm:p-6 md:p-8 lg:p-10 max-w-6xl mx-auto">
       {/* Header Row - Hidden on mobile, visible on medium screens and up */}
