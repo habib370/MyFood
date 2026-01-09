@@ -292,7 +292,7 @@ const calculateDiscountedPrice = (price, discount) => {
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Main Container */}
-      <div className="container mx-auto px-4 py-8 max-w-7xl">
+      <div className="container mx-auto px-4 py-8 max-w-full ">
         <div className="flex flex-col lg:flex-row gap-8">
           {/* Left: Image Gallery */}
           <div className="lg:w-1/2">
@@ -793,7 +793,8 @@ const calculateDiscountedPrice = (price, discount) => {
       </button>
     </div>
   ) : (
-    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
+    <div className="flex flex-wrap items-center justify-center gap-8 pb-5">
+
       {similarItems.map((simItem) => {
         const quantity = cartItems[simItem._id] || 0;
         const isAvailable = simItem.isAvailable !== false;

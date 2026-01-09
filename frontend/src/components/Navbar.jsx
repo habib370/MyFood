@@ -252,7 +252,7 @@ export const Navbar = () => {
             ref={searchPopupRef}
             className="absolute top-full left-0 right-0 bg-white shadow-xl border-t border-gray-200 max-h-[70vh] overflow-y-auto animate-slideDown z-50"
           >
-            <div className="max-w-screen-xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+            <div className="max-w-screen mx-auto px-4 sm:px-6 lg:px-8 py-6">
               {/* Search Results */}
               {searchQuery ? (
                 <div>

@@ -150,10 +150,10 @@ const AboutUs = () => {
       </div>
 
       {/* Our Story */}
-      <section className="py-20 px-4 max-w-6xl mx-auto">
+      <section className="py-20 px-4 max-w-screen mx-auto">
         <div className="grid md:grid-cols-2 gap-12 items-center">
           <div>
-            <h2 className="text-4xl font-bold text-gray-900 mb-6">
+            <h2 className="text-4xl  pb-4 font-bold text-gray-900 mb-6">
               Our <span className="text-blue-600">Story</span>
             </h2>
             <p className="text-gray-700 text-lg mb-6">
@@ -205,8 +205,8 @@ const AboutUs = () => {
 
       {/* Stats Section */}
       <section className="py-16 bg-gradient-to-r from-blue-50 to-purple-50">
-        <div className="max-w-6xl mx-auto px-4">
-          <h2 className="text-4xl font-bold text-center mb-12 text-gray-900">
+        <div className="max-w-full mx-auto px-4">
+          <h2 className="text-4xl pb-5 font-bold text-center mb-12 text-gray-900">
             Numbers That <span className="text-blue-600">Speak</span>
           </h2>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
@@ -227,14 +227,12 @@ const AboutUs = () => {
       </section>
 
       {/* Our Values */}
-      <section className="py-20 px-4 max-w-6xl mx-auto">
+      <section className="py-20 px-4 max-w-full mx-auto">
         <div className="text-center mb-16">
-          <h2 className="text-4xl font-bold text-gray-900 mb-4">
+          <h2 className="text-4xl pb-5 font-bold text-gray-900 mb-4">
             Our <span className="text-blue-600">Core Values</span>
           </h2>
-          <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-            The principles that guide every decision we make at My Food
-          </p>
+        
         </div>
         <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
           {values.map((value, index) => (
@@ -252,14 +250,12 @@ const AboutUs = () => {
 
       {/* Our Team */}
       <section className="py-20 px-4 bg-gray-50">
-        <div className="max-w-6xl mx-auto">
+        <div className="max-w-full mx-auto">
           <div className="text-center mb-16">
-            <h2 className="text-4xl font-bold text-gray-900 mb-4">
+            <h2 className="text-4xl font-bold pb-5 text-gray-900 mb-4">
               Meet Our <span className="text-blue-600">Leadership</span>
             </h2>
-            <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-              The passionate team behind My Food's success story
-            </p>
+            
           </div>
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
             {teamMembers.map((member, index) => (
@@ -286,7 +282,7 @@ const AboutUs = () => {
       </section>
 
       {/* Timeline */}
-      <section className="py-20 px-4 max-w-6xl mx-auto">
+      <section className="py-20 px-4 max-w-full mx-auto">
         <div className="text-center mb-16">
           <h2 className="text-4xl font-bold text-gray-900 mb-4">
             Our <span className="text-blue-600">Journey</span>
@@ -321,7 +317,7 @@ const AboutUs = () => {
 
       {/* Features */}
       <section className="py-20 px-4 bg-gradient-to-r from-blue-600 to-purple-600 text-white">
-        <div className="max-w-6xl mx-auto">
+        <div className="max-w-full mx-auto">
           <div className="text-center mb-16">
             <h2 className="text-4xl font-bold mb-4">Why Choose My Food?</h2>
             <p className="text-xl text-blue-100">Experience shopping like never before</p>
@@ -341,7 +337,7 @@ const AboutUs = () => {
       </section>
 
       {/* Future Vision */}
-      <section className="py-20 px-4 max-w-6xl mx-auto">
+      <section className="py-20 px-4 max-w-full mx-auto">
         <div className="grid md:grid-cols-2 gap-12 items-center">
           <div>
             <h2 className="text-4xl font-bold text-gray-900 mb-6">
@@ -391,7 +387,7 @@ const AboutUs = () => {
 
       {/* Contact Info */}
       <section className="py-16 px-4 bg-gray-50">
-        <div className="max-w-6xl mx-auto">
+        <div className="max-w-full mx-auto">
           <h2 className="text-4xl font-bold text-center mb-12 text-gray-900">
             Get in <span className="text-blue-600">Touch</span>
           </h2>
@@ -426,7 +422,7 @@ const AboutUs = () => {
 
       {/* CTA Section */}
       <section className="py-16 px-4 bg-gradient-to-r from-yellow-400 to-orange-500 text-gray-900">
-        <div className="max-w-4xl mx-auto text-center">
+        <div className=" flex flex-col items-center max-w-full mx-auto text-center">
           <h2 className="text-4xl font-bold mb-6">Ready to Experience My Food?</h2>
           <p className="text-xl mb-8 max-w-2xl mx-auto">
             Join millions of satisfied customers who trust us for their daily needs

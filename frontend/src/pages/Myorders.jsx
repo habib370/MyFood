@@ -274,22 +274,21 @@ export const Myorders = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white p-4 md:p-8">
+    <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white p-4 md:p-8 ">
       {/* Review Modal */}
       <ReviewModal />
 
       {/* Header Section */}
-      <div className="max-w-7xl mx-auto">
+    <div className="max-w-full p-4 md:p-8 lg:p-20 mx-auto">
+
         <div className="text-center mb-10">
           <div className="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-br from-green-500 to-emerald-600 rounded-full mb-4 shadow-lg">
             <FaCheckCircle className="text-white text-3xl" />
           </div>
-          <h1 className="text-3xl md:text-4xl font-bold text-gray-900 mb-3">
+          <h1 className="text-3xl pb-5 md:text-4xl font-bold text-gray-900 mb-3">
             Order History
           </h1>
-          <p className="text-gray-600 max-w-2xl mx-auto">
-            View all your completed and paid orders in one place
-          </p>
+          
         </div>
 
         {/* Stats Overview */}

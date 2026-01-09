@@ -45,7 +45,7 @@ if (loading)
       </div>
     );
   return (
-    <div className="flex flex-col p-4 sm:p-6 md:p-8 lg:p-10 max-w-6xl mx-auto">
+    <div className="flex flex-col p-4  sm:p-6 md:p-8 lg:p-10 max-w-screen mx-auto">
       {/* Header Row - Hidden on mobile, visible on medium screens and up */}
       <div className="hidden md:grid md:grid-cols-6 gap-4 font-semibold border-b border-gray-300 pb-2 mb-4 text-gray-700">
         <div>Items</div>

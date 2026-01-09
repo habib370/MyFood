@@ -89,7 +89,7 @@ export const EditProfile = () => {
 
   return (
     <div className="min-h-screen bg-gray-50 py-4 md:py-8 px-3 sm:px-4 md:px-6">
-      <div className="max-w-2xl mx-auto space-y-6 md:space-y-8">
+      <div className="max-w-2xl mx-auto md:space-y-8">
         {/* Name Update Section */}
         <form onSubmit={nameSubmitHandler} className="bg-white rounded-xl shadow-sm border border-gray-200 p-4 md:p-6">
           <h1 className="text-lg md:text-2xl font-semibold text-gray-800 pb-3 md:pb-4">My Profile</h1>
@@ -106,7 +106,7 @@ export const EditProfile = () => {
                 onChange={(e) =>
                   setNameData({ ...nameData, firstName: e.target.value })
                 }
-                className="w-full border border-gray-300 rounded-lg md:rounded-xl px-3 py-2 md:px-4 md:py-3 text-sm md:text-base focus:outline-none focus:ring-2 focus:ring-pink-400 focus:border-transparent transition-all"
+                className="w-full border border-gray-300 rounded-lg md:rounded-xl px-3 py-2 md:px-4 md:py-3 text-sm md:text-base focus:outline-none focus:ring-2 focus:ring-orange-400 focus:border-transparent transition-all"
               />
             </div>
 
@@ -121,13 +121,13 @@ export const EditProfile = () => {
                 onChange={(e) =>
                   setNameData({ ...nameData, lastName: e.target.value })
                 }
-                className="w-full border border-gray-300 rounded-lg md:rounded-xl px-3 py-2 md:px-4 md:py-3 text-sm md:text-base focus:outline-none focus:ring-2 focus:ring-pink-400 focus:border-transparent transition-all"
+                className="w-full border border-gray-300 rounded-lg md:rounded-xl px-3 py-2 md:px-4 md:py-3 text-sm md:text-base focus:outline-none focus:ring-2 focus:ring-orange-400 focus:border-transparent transition-all"
               />
             </div>
             
             <button 
               type="submit"
-              className="w-full md:w-auto bg-pink-500 hover:bg-pink-600 text-white font-medium text-sm md:text-base px-4 py-2 md:py-2.5 rounded-lg md:rounded-xl transition-colors duration-200 shadow-sm translate-y-2"
+              className="w-full md:w-auto bg-orange-500 hover:bg-orange-600 text-white font-medium text-sm md:text-base px-4 py-2 md:py-2.5 rounded-lg md:rounded-xl transition-colors duration-200 shadow-sm translate-y-2"
             >
               Save Changes
             </button>
@@ -147,12 +147,12 @@ export const EditProfile = () => {
                   name="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  className="w-full border border-gray-300 rounded-lg md:rounded-xl px-3 py-2 md:px-4 md:py-3 text-sm md:text-base focus:outline-none focus:ring-2 focus:ring-pink-400 focus:border-transparent transition-all"
+                  className="w-full border border-gray-300 rounded-lg md:rounded-xl px-3 py-2 md:px-4 md:py-3 text-sm md:text-base focus:outline-none focus:ring-2 focus:ring-orange-400 focus:border-transparent transition-all"
                 />
               </div>
               <button
                 onClick={otpSubmitHandler}
-                className="w-full md:w-auto bg-pink-500 hover:bg-pink-600 text-white font-medium text-sm md:text-base px-4 py-2 md:py-2.5 rounded-lg md:rounded-xl transition-colors duration-200 shadow-sm cursor-pointer translate-y-2"
+                className="w-full md:w-auto bg-orange-500 hover:bg-orange-600 text-white font-medium text-sm md:text-base px-4 py-2 md:py-2.5 rounded-lg md:rounded-xl transition-colors duration-200 shadow-sm cursor-pointer translate-y-2"
               >
                 Send OTP
               </button>
@@ -168,12 +168,12 @@ export const EditProfile = () => {
                   name="otp"
                   value={otp}
                   onChange={(e) => setOtp(e.target.value)}
-                  className="w-full border border-gray-300 rounded-lg md:rounded-xl px-3 py-2 md:px-4 md:py-3 text-sm md:text-base focus:outline-none focus:ring-2 focus:ring-pink-400 focus:border-transparent transition-all"
+                  className="w-full border border-gray-300 rounded-lg md:rounded-xl px-3 py-2 md:px-4 md:py-3 text-sm md:text-base focus:outline-none focus:ring-2 focus:orange-pink-400 focus:border-transparent transition-all"
                 />
               </div>
               <button
                 onSubmit={() => {}}
-                className="w-full md:w-auto bg-pink-500 hover:bg-pink-600 text-white font-medium text-sm md:text-base px-4 py-2 md:py-2.5 rounded-lg md:rounded-xl transition-colors duration-200 shadow-sm cursor-pointer translate-y-2"
+                className="w-full md:w-auto bg-orange-500 hover:bg-orange-600 text-white font-medium text-sm md:text-base px-4 py-2 md:py-2.5 rounded-lg md:rounded-xl transition-colors duration-200 shadow-sm cursor-pointer translate-y-2"
               >
                 Verify OTP
               </button>
@@ -196,7 +196,7 @@ export const EditProfile = () => {
                 onChange={(e) =>
                   setPassData({ ...passData, currPass: e.target.value })
                 }
-                className="w-full border border-gray-300 rounded-lg md:rounded-xl px-3 py-2 md:px-4 md:py-3 text-sm md:text-base focus:outline-none focus:ring-2 focus:ring-pink-400 focus:border-transparent transition-all"
+                className="w-full border border-gray-300 rounded-lg md:rounded-xl px-3 py-2 md:px-4 md:py-3 text-sm md:text-base focus:outline-none focus:ring-2 focus:orange-pink-400 focus:border-transparent transition-all"
               />
             </div>
             
@@ -210,13 +210,13 @@ export const EditProfile = () => {
                 onChange={(e) =>
                   setPassData({ ...passData, newPass: e.target.value })
                 }
-                className="w-full border border-gray-300 rounded-lg md:rounded-xl px-3 py-2 md:px-4 md:py-3 text-sm md:text-base focus:outline-none focus:ring-2 focus:ring-pink-400 focus:border-transparent transition-all"
+                className="w-full border border-gray-300 rounded-lg md:rounded-xl px-3 py-2 md:px-4 md:py-3 text-sm md:text-base focus:outline-none focus:ring-2 focus:ring-orange-400 focus:border-transparent transition-all"
               />
             </div>
             
             <button 
               type="submit"
-              className="w-full md:w-auto bg-pink-500 hover:bg-pink-600 text-white font-medium text-sm md:text-base px-4 py-2 md:py-2.5 rounded-lg md:rounded-xl transition-colors duration-200 shadow-sm"
+              className="w-full md:w-auto  bg-orange-500 hover:bg-orange-600 text-white font-medium text-sm md:text-base px-4 md:py-2.5 rounded-lg md:rounded-xl transition-colors duration-200 shadow-sm"
             >
               Update Password
             </button>
